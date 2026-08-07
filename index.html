@@ -1,254 +1,29 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1020" />
-  <title>Assistant Secteur — V1</title>
-  <link rel="manifest" href="manifest.json" />
-  <style>
-    :root{
-      --bg:#070b14; --panel:#0e1526; --panel2:#121b31; --line:#22304e;
-      --text:#f4f7fb; --muted:#95a3bd; --ok:#20c77a; --warn:#ffb020;
-      --danger:#ff5d6c; --accent:#4e8cff; --prio:#ff6b3d;
-      --shadow:0 10px 25px rgba(0,0,0,.25);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#070b14 0%,#0a1020 100%);
-      color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-    .app{max-width:820px;margin:auto;min-height:100vh;padding:18px 14px 96px}
-    header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
-    h1{font-size:23px;margin:0 0 4px} .sub{color:var(--muted);font-size:13px}
-    .badge{background:#14213c;border:1px solid #273a61;color:#b9ccff;padding:8px 10px;border-radius:999px;font-size:12px}
-    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0 18px}
-    .metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
-    .metric strong{font-size:22px;display:block}.metric span{font-size:11px;color:var(--muted)}
-    .section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 10px}
-    .section-title h2{font-size:16px;margin:0}.hint{font-size:11px;color:var(--muted)}
-    .machines{display:grid;gap:10px}
-    .machine{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-    .machine.priority{border-color:#6d3b2d}
-    .machine.priority:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--prio)}
-    .machine-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .name{font-weight:750;font-size:16px}.meta{color:var(--muted);font-size:12px;margin-top:3px}
-    .status{font-size:12px;font-weight:700;padding:7px 9px;border-radius:999px;white-space:nowrap}
-    .running{background:rgba(32,199,122,.13);color:#77e2ad;border:1px solid rgba(32,199,122,.35)}
-    .stopped{background:rgba(255,93,108,.13);color:#ff9aa4;border:1px solid rgba(255,93,108,.35)}
-    .prio-tag{display:inline-flex;margin-top:10px;padding:5px 8px;border-radius:8px;background:rgba(255,107,61,.12);color:#ffb09a;font-size:11px;border:1px solid rgba(255,107,61,.28)}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-    button{border:0;border-radius:11px;padding:11px 12px;font-weight:700;font-size:13px;cursor:pointer}
-    .btn-stop{background:#2a1420;color:#ffadb5;border:1px solid #5a2734}
-    .btn-start{background:#113224;color:#90e8bd;border:1px solid #245d43}
-    .btn-secondary{background:#16213a;color:#c9d6ef;border:1px solid #2a3a5e}
-    .btn-primary{background:var(--accent);color:white}
-    .priority-box{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:14px}
-    .priority-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    select,input{width:100%;background:#0a1120;color:var(--text);border:1px solid #2b3b60;border-radius:10px;padding:11px;font-size:13px}
-    .alert{display:none;margin:0 0 14px;background:#2a1f10;border:1px solid #684c1d;color:#ffd494;padding:12px;border-radius:12px;font-size:13px}
-    .alert.show{display:block}
-    .history{display:grid;gap:8px}
-    .event{background:#0b1221;border:1px solid #1f2b47;border-radius:12px;padding:10px 12px;font-size:12px}
-    .event time{color:var(--muted);display:block;font-size:10px;margin-top:3px}
-    .empty{color:var(--muted);font-size:12px;padding:10px 2px}
-    nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,11,20,.94);backdrop-filter:blur(12px);border-top:1px solid #1d2944;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
-    .navinner{max-width:820px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .navinner button{background:#121b31;color:#b7c6df;border:1px solid #263654}
-    .navinner button.active{background:#1d3158;color:#fff;border-color:#3f69aa}
-    .view{display:none}.view.active{display:block}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:20}
-    .modal.show{display:flex}.sheet{width:min(820px,100%);background:#0e1526;border:1px solid #2a395c;border-radius:18px 18px 14px 14px;padding:16px}
-    .sheet h3{margin:0 0 12px}.sheet .row{display:grid;gap:9px}.sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-  </style>
-</head>
-<body>
-<div class="app">
-  <header>
-    <div>
-      <h1>Assistant Secteur</h1>
-      <div class="sub">Secteur meulage automatisé • V1</div>
-    </div>
-    <div class="badge">Mode local</div>
-  </header>
-
-  <div id="priorityAlert" class="alert"></div>
-
-  <section id="viewSecteur" class="view active">
-    <div class="summary">
-      <div class="metric"><strong id="mRun">0</strong><span>En marche</span></div>
-      <div class="metric"><strong id="mStop">0</strong><span>À l'arrêt</span></div>
-      <div class="metric"><strong id="mPrio">3</strong><span>Prioritaires</span></div>
-    </div>
-
-    <div class="section-title"><h2>Machines du secteur</h2><span class="hint">État en temps réel sur cet appareil</span></div>
-    <div id="machines" class="machines"></div>
-  </section>
-
-  <section id="viewResponsable" class="view">
-    <div class="section-title"><h2>Priorités du secteur</h2><span class="hint">Responsable</span></div>
-    <div class="priority-box">
-      <div class="sub" style="margin-bottom:10px">Choisis les 3 machines à traiter en priorité.</div>
-      <div class="priority-grid">
-        <select id="p1"></select><select id="p2"></select><select id="p3"></select>
-      </div>
-      <button id="savePrio" class="btn-primary" style="width:100%;margin-top:10px">Appliquer les priorités</button>
-    </div>
-
-    <div class="section-title"><h2>Historique récent</h2><button id="clearHistory" class="btn-secondary">Effacer</button></div>
-    <div id="history" class="history"></div>
-  </section>
-</div>
-
-<nav>
-  <div class="navinner">
-    <button id="tabSecteur" class="active">Secteur</button>
-    <button id="tabResponsable">Responsable</button>
-  </div>
-</nav>
-
-<div id="stopModal" class="modal">
-  <div class="sheet">
-    <h3>Déclarer un arrêt</h3>
-    <div class="row">
-      <input id="stopMachine" type="text" disabled />
-      <select id="reason">
-        <option value="Réglage">Réglage</option>
-        <option value="Panne">Panne</option>
-        <option value="Qualité">Qualité / non-conformité</option>
-        <option value="Manque matière">Manque matière</option>
-        <option value="Outillage">Outillage / meule</option>
-        <option value="Autre">Autre</option>
-      </select>
-      <input id="comment" type="text" placeholder="Commentaire facultatif" />
-    </div>
-    <div class="sheet-actions">
-      <button id="cancelStop" class="btn-secondary">Annuler</button>
-      <button id="confirmStop" class="btn-stop">Déclarer l'arrêt</button>
-    </div>
-  </div>
-</div>
-
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#070b14"><link rel="manifest" href="manifest.json"><title>Assistant Secteur V1.1</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080d18;color:#f5f7fb;font-family:system-ui}.app{max-width:760px;margin:auto;padding:18px 14px 85px}h1{font-size:23px;margin:0}.sub{color:#91a0ba;font-size:12px;margin:3px 0 16px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat,.card,.panel{background:#0e1628;border:1px solid #22304d;border-radius:14px;padding:12px}.stat b{display:block;font-size:22px}.stat span{font-size:10px;color:#91a0ba}h2{font-size:15px;margin:18px 2px 9px}.list{display:grid;gap:9px}.card{position:relative}.prio{border-left:4px solid #ff7548}.top{display:flex;justify-content:space-between;gap:8px}.name{font-weight:800}.meta{color:#91a0ba;font-size:11px}.status{font-size:10px;font-weight:800;padding:6px 8px;border-radius:99px;height:max-content}.run{background:#123326;color:#83e4b5}.stop{background:#351923;color:#ffabb5}.maint{background:#352a13;color:#ffda8b}.taken{background:#172b4d;color:#bcd1ff}.tag{display:inline-block;margin-top:8px;font-size:10px;color:#ffb49d}.issue{font-size:12px;margin-top:8px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}button,select{padding:10px;border-radius:10px;border:1px solid #2c3d61;background:#16223c;color:#dce7fb;font-weight:700}.red{background:#311722;color:#ffadb6}.green{background:#123326;color:#90e8bd}.blue{background:#407de8;color:white}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.grid3 select{min-width:0}.panel>.blue{width:100%;margin-top:8px}.view{display:none}.view.active{display:block;animation:a .2s ease}@keyframes a{from{opacity:.2;transform:translateX(10px)}}nav{position:fixed;bottom:0;left:0;right:0;background:#080d18ee;border-top:1px solid #22304d;padding:9px}.nav{max-width:760px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:7px}.activeTab{background:#1d345d}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:5;align-items:flex-end;padding:10px}.modal.show{display:flex}.sheet{background:#10192d;border:1px solid #2a3c61;border-radius:18px;padding:15px;width:min(760px,100%);margin:auto}.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.choices button{min-height:50px}.wide{grid-column:1/-1}.assign{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:9px}.event{font-size:11px;background:#0b1323;border:1px solid #1d2a46;border-radius:10px;padding:9px}.event small{display:block;color:#91a0ba;margin-top:3px}
+</style></head><body><div class="app"><h1>Assistant Secteur</h1><div class="sub">Secteur meulage automatisé • V1.1</div>
+<section id="vs" class="view active"><div class="stats"><div class="stat"><b id="nr">5</b><span>En marche</span></div><div class="stat"><b id="ns">0</b><span>À l'arrêt</span></div><div class="stat"><b>3</b><span>Prioritaires</span></div></div><h2>Machines du secteur</h2><div id="machines" class="list"></div></section>
+<section id="vr" class="view"><h2>Priorités</h2><div class="panel"><div class="grid3"><select id="p1"></select><select id="p2"></select><select id="p3"></select></div><button id="savep" class="blue">Appliquer les priorités</button></div><h2>Interventions en cours</h2><div id="jobs" class="list"></div><h2>Historique</h2><div id="hist" class="list"></div></section></div>
+<nav><div class="nav"><button id="bs" class="activeTab">Secteur</button><button id="br">Responsable</button></div></nav>
+<div id="modal" class="modal"><div class="sheet"><b id="mt">Déclarer un arrêt</b><div id="mc" class="choices"></div></div></div>
 <script>
-const defaultState = {
-  machines: [
-    {id:1,name:"Machine 1",detail:"BERGER 1",running:true,reason:""},
-    {id:2,name:"Machine 2",detail:"BERGER 2",running:true,reason:""},
-    {id:3,name:"Machine 3",detail:"BERGER 3",running:true,reason:""},
-    {id:4,name:"Machine 4",detail:"BERGER 4",running:true,reason:""},
-    {id:5,name:"Machine 5",detail:"SIEPMANN",running:true,reason:""}
-  ],
-  priorities:[1,2,3],
-  history:[]
-};
-let state = JSON.parse(localStorage.getItem("assistantSecteurV1") || "null") || defaultState;
-let activeStopId = null;
-
-function save(){ localStorage.setItem("assistantSecteurV1", JSON.stringify(state)); }
-function now(){ return new Date().toLocaleString("fr-FR",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"}); }
-function addEvent(text){
-  state.history.unshift({text,time:now()});
-  state.history = state.history.slice(0,30);
-  save();
-}
-function render(){
-  const wrap=document.getElementById("machines"); wrap.innerHTML="";
-  state.machines.forEach(m=>{
-    const isP=state.priorities.includes(m.id);
-    const card=document.createElement("div");
-    card.className="machine"+(isP?" priority":"");
-    const prioIndex=state.priorities.indexOf(m.id)+1;
-    card.innerHTML=`
-      <div class="machine-top">
-        <div><div class="name">${m.name}</div><div class="meta">${m.detail}</div></div>
-        <div class="status ${m.running?'running':'stopped'}">${m.running?'EN MARCHE':'ARRÊT'}</div>
-      </div>
-      ${isP?`<div class="prio-tag">Priorité n°${prioIndex}</div>`:""}
-      ${!m.running?`<div class="meta" style="margin-top:8px">Motif : ${m.reason||"Non renseigné"}</div>`:""}
-      <div class="actions">
-        ${m.running
-          ? `<button class="btn-stop" onclick="openStop(${m.id})">Déclarer un arrêt</button>`
-          : `<button class="btn-start" onclick="restart(${m.id})">Remettre en marche</button>`}
-        <button class="btn-secondary" onclick="togglePriorityQuick(${m.id})">${isP?'Prioritaire ✓':'Mettre prioritaire'}</button>
-      </div>`;
-    wrap.appendChild(card);
-  });
-  document.getElementById("mRun").textContent=state.machines.filter(m=>m.running).length;
-  document.getElementById("mStop").textContent=state.machines.filter(m=>!m.running).length;
-  fillPrioritySelects();
-  renderHistory();
-}
-function fillPrioritySelects(){
-  ["p1","p2","p3"].forEach((id,i)=>{
-    const s=document.getElementById(id); s.innerHTML="";
-    state.machines.forEach(m=>{
-      const o=document.createElement("option"); o.value=m.id; o.textContent=m.name+" — "+m.detail;
-      if(state.priorities[i]===m.id)o.selected=true; s.appendChild(o);
-    });
-  });
-}
-function openStop(id){
-  activeStopId=id;
-  const m=state.machines.find(x=>x.id===id);
-  document.getElementById("stopMachine").value=m.name+" — "+m.detail;
-  document.getElementById("comment").value="";
-  document.getElementById("stopModal").classList.add("show");
-}
-function restart(id){
-  const m=state.machines.find(x=>x.id===id); m.running=true; m.reason="";
-  addEvent(`${m.name} remise en marche`);
-  save(); render();
-}
-function togglePriorityQuick(id){
-  if(state.priorities.includes(id)){
-    alert("Une machine prioritaire se change depuis l'onglet Responsable.");
-    return;
-  }
-  state.priorities[2]=id;
-  addEvent(`Priorités modifiées : ${priorityNames().join(" > ")}`);
-  flashPriorityAlert();
-  save(); render();
-}
-function priorityNames(){ return state.priorities.map(id=>state.machines.find(m=>m.id===id)?.name||""); }
-function flashPriorityAlert(){
-  const a=document.getElementById("priorityAlert");
-  a.textContent="⚠ Priorités mises à jour : "+priorityNames().join(" → ");
-  a.classList.add("show");
-  setTimeout(()=>a.classList.remove("show"),6000);
-}
-function renderHistory(){
-  const h=document.getElementById("history");
-  if(!state.history.length){h.innerHTML='<div class="empty">Aucun événement pour le moment.</div>';return;}
-  h.innerHTML=state.history.map(e=>`<div class="event">${e.text}<time>${e.time}</time></div>`).join("");
-}
-
-document.getElementById("cancelStop").onclick=()=>document.getElementById("stopModal").classList.remove("show");
-document.getElementById("confirmStop").onclick=()=>{
-  const m=state.machines.find(x=>x.id===activeStopId);
-  const reason=document.getElementById("reason").value;
-  const comment=document.getElementById("comment").value.trim();
-  m.running=false; m.reason=reason+(comment?` — ${comment}`:"");
-  addEvent(`${m.name} arrêtée : ${m.reason}`);
-  document.getElementById("stopModal").classList.remove("show");
-  save(); render();
-};
-document.getElementById("savePrio").onclick=()=>{
-  const vals=["p1","p2","p3"].map(id=>Number(document.getElementById(id).value));
-  if(new Set(vals).size<3){ alert("Choisis 3 machines différentes."); return; }
-  state.priorities=vals;
-  addEvent(`Priorités modifiées : ${priorityNames().join(" > ")}`);
-  flashPriorityAlert();
-  save(); render();
-};
-document.getElementById("clearHistory").onclick=()=>{state.history=[];save();renderHistory();};
-document.getElementById("tabSecteur").onclick=()=>switchView("secteur");
-document.getElementById("tabResponsable").onclick=()=>switchView("responsable");
-function switchView(v){
-  document.getElementById("viewSecteur").classList.toggle("active",v==="secteur");
-  document.getElementById("viewResponsable").classList.toggle("active",v==="responsable");
-  document.getElementById("tabSecteur").classList.toggle("active",v==="secteur");
-  document.getElementById("tabResponsable").classList.toggle("active",v==="responsable");
-}
-if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}
-render();
-</script>
-</body>
-</html>
+const D={machines:["BERGER 1","BERGER 2","BERGER 3","BERGER 4","SIEPMANN"].map((x,i)=>({id:i+1,name:"Machine "+(i+1),detail:x,state:"run",cause:"",handling:"",assigned:""})),priorities:[1,2,3],history:[]};
+let S=JSON.parse(localStorage.getItem("AS11")||"null")||D,active=0,cause="";
+const causes=["Perte de pièce","Défaut capteur","Problème réglage","Meule / brossage","Robot / préhenseur","Évacuation","Autre"],people=["Non affecté","Opérateur 1","Opérateur 2","Régleur","Responsable"];
+function save(){localStorage.setItem("AS11",JSON.stringify(S))}function log(t){S.history.unshift({t,d:new Date().toLocaleString("fr-FR")});S.history=S.history.slice(0,20);save()}
+function st(m){if(m.state==="run")return["EN MARCHE","run"];if(m.handling==="maintenance")return["MAINTENANCE","maint"];if(m.handling==="taken")return["PRIS EN CHARGE","taken"];return["ARRÊT","stop"]}
+function render(){let w=document.querySelector("#machines");w.innerHTML=S.machines.map(m=>{let q=st(m),p=S.priorities.indexOf(m.id)+1;return `<div class="card ${p?"prio":""}"><div class="top"><div><div class="name">${m.name}</div><div class="meta">${m.detail}</div></div><span class="status ${q[1]}">${q[0]}</span></div>${p?`<span class="tag">Priorité n°${p}</span>`:""}${m.state!=="run"?`<div class="issue"><b>${m.cause}</b>${m.assigned?" • "+m.assigned:""}</div>`:""}<div class="actions">${m.state==="run"?`<button class="red" onclick="openStop(${m.id})">Déclarer un arrêt</button><button onclick="quick(${m.id})">${p?"Prioritaire ✓":"Mettre prioritaire"}</button>`:`<button class="green" onclick="resolve(${m.id})">Problème résolu</button>${m.handling==="maintenance"?`<button disabled>Maintenance demandée</button>`:`<button onclick="take(${m.id})">Je prends</button>`}</div></div>`}).join("");
+nr.textContent=S.machines.filter(m=>m.state==="run").length;ns.textContent=5-nr.textContent;fill();jobs();hist()}
+function fill(){["p1","p2","p3"].forEach((x,i)=>document.getElementById(x).innerHTML=S.machines.map(m=>`<option value="${m.id}" ${S.priorities[i]===m.id?"selected":""}>${m.name}</option>`).join(""))}
+function openStop(id){active=id;mt.textContent="Arrêt — "+S.machines.find(m=>m.id===id).name;mc.innerHTML=causes.map(c=>`<button onclick="pick('${c}')">${c}</button>`).join("")+`<button class="wide" onclick="closeM()">Annuler</button>`;modal.classList.add("show")}
+function pick(c){cause=c;mt.textContent="Qui doit intervenir ?";mc.innerHTML=`<button class="green" onclick="confirmS('team')">Équipe peut prendre en charge</button><button class="red" onclick="confirmS('maintenance')">Maintenance nécessaire</button><button class="wide" onclick="openStop(${active})">← Retour</button>`}
+function confirmS(h){let m=S.machines.find(x=>x.id===active);m.state="stop";m.cause=cause;m.handling=h==="maintenance"?"maintenance":"waiting";m.assigned="";log(`${m.name} — ${cause} — ${h==="maintenance"?"maintenance demandée":"équipe peut intervenir"}`);closeM();render()}
+function closeM(){modal.classList.remove("show")}function take(id){let m=S.machines.find(x=>x.id===id);m.handling="taken";m.assigned=m.assigned||"Opérateur";log(`${m.name} prise en charge par ${m.assigned}`);render()}
+function resolve(id){let m=S.machines.find(x=>x.id===id);log(`${m.name} remise en marche`);Object.assign(m,{state:"run",cause:"",handling:"",assigned:""});render()}
+function quick(id){if(S.priorities.includes(id))return alert("Modifie les priorités dans le mode Responsable.");S.priorities[2]=id;log("Priorités modifiées");render()}
+function jobs(){let a=S.machines.filter(m=>m.state!=="run");document.querySelector("#jobs").innerHTML=a.length?a.map(m=>`<div class="card"><div class="top"><div><b>${m.name}</b><div class="issue">${m.cause}</div></div><span class="status ${st(m)[1]}">${st(m)[0]}</span></div><div class="assign"><select id="a${m.id}">${people.map(p=>`<option ${m.assigned===p?"selected":""}>${p}</option>`).join("")}</select><button class="blue" onclick="assign(${m.id})">Affecter</button></div></div>`).join(""):`<div class="meta">Aucun arrêt en cours.</div>`}
+function assign(id){let m=S.machines.find(x=>x.id===id),v=document.getElementById("a"+id).value;m.assigned=v==="Non affecté"?"":v;if(m.assigned)m.handling="taken";log(`${m.name} affectée à ${m.assigned||"personne"}`);render()}
+function hist(){document.querySelector("#hist").innerHTML=S.history.length?S.history.map(e=>`<div class="event">${e.t}<small>${e.d}</small></div>`).join(""):`<div class="meta">Aucun événement.</div>`}
+savep.onclick=()=>{let v=["p1","p2","p3"].map(x=>+document.getElementById(x).value);if(new Set(v).size<3)return alert("Choisis 3 machines différentes.");S.priorities=v;log("Priorités modifiées");render()}
+function tab(r){vs.classList.toggle("active",!r);vr.classList.toggle("active",r);bs.classList.toggle("activeTab",!r);br.classList.toggle("activeTab",r)}bs.onclick=()=>tab(false);br.onclick=()=>tab(true);modal.onclick=e=>{if(e.target===modal)closeM()};if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});render();
+</script></body></html>

@@ -4,6 +4,5 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#070b14",
-  "theme_color": "#0b1020",
-  "description": "Prototype V1 de suivi d'un secteur de production."
+  "theme_color": "#070b14"
 }
