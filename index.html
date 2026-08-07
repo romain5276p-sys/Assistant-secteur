@@ -12,8 +12,24 @@ let S=JSON.parse(localStorage.getItem("AS11")||"null")||D,active=0,cause="";
 const causes=["Perte de pièce","Défaut capteur","Problème réglage","Meule / brossage","Robot / préhenseur","Évacuation","Autre"],people=["Non affecté","Opérateur 1","Opérateur 2","Régleur","Responsable"];
 function save(){localStorage.setItem("AS11",JSON.stringify(S))}function log(t){S.history.unshift({t,d:new Date().toLocaleString("fr-FR")});S.history=S.history.slice(0,20);save()}
 function st(m){if(m.state==="run")return["EN MARCHE","run"];if(m.handling==="maintenance")return["MAINTENANCE","maint"];if(m.handling==="taken")return["PRIS EN CHARGE","taken"];return["ARRÊT","stop"]}
-function render(){let w=document.querySelector("#machines");w.innerHTML=S.machines.map(m=>{let q=st(m),p=S.priorities.indexOf(m.id)+1;return `<div class="card ${p?"prio":""}"><div class="top"><div><div class="name">${m.name}</div><div class="meta">${m.detail}</div></div><span class="status ${q[1]}">${q[0]}</span></div>${p?`<span class="tag">Priorité n°${p}</span>`:""}${m.state!=="run"?`<div class="issue"><b>${m.cause}</b>${m.assigned?" • "+m.assigned:""}</div>`:""}<div class="actions">${m.state==="run"?`<button class="red" onclick="openStop(${m.id})">Déclarer un arrêt</button><button onclick="quick(${m.id})">${p?"Prioritaire ✓":"Mettre prioritaire"}</button>`:`<button class="green" onclick="resolve(${m.id})">Problème résolu</button>${m.handling==="maintenance"?`<button disabled>Maintenance demandée</button>`:`<button onclick="take(${m.id})">Je prends</button>`}</div></div>`}).join("");
-nr.textContent=S.machines.filter(m=>m.state==="run").length;ns.textContent=5-nr.textContent;fill();jobs();hist()}
+function render(){
+  const w=document.querySelector("#machines");
+  w.innerHTML=S.machines.map(m=>{
+    const q=st(m), p=S.priorities.indexOf(m.id)+1;
+    const issue=m.state!=="run" ? `<div class="issue"><b>${m.cause}</b>${m.assigned?" • "+m.assigned:""}</div>` : "";
+    let actions="";
+    if(m.state==="run"){
+      actions=`<button class="red" onclick="openStop(${m.id})">Déclarer un arrêt</button><button onclick="quick(${m.id})">${p?"Prioritaire ✓":"Mettre prioritaire"}</button>`;
+    }else{
+      actions=`<button class="green" onclick="resolve(${m.id})">Problème résolu</button>`;
+      actions+=m.handling==="maintenance" ? `<button disabled>Maintenance demandée</button>` : `<button onclick="take(${m.id})">Je prends</button>`;
+    }
+    return `<div class="card ${p?"prio":""}"><div class="top"><div><div class="name">${m.name}</div><div class="meta">${m.detail}</div></div><span class="status ${q[1]}">${q[0]}</span></div>${p?`<span class="tag">Priorité n°${p}</span>`:""}${issue}<div class="actions">${actions}</div></div>`;
+  }).join("");
+  nr.textContent=S.machines.filter(m=>m.state==="run").length;
+  ns.textContent=5-Number(nr.textContent);
+  fill();jobs();hist();
+}
 function fill(){["p1","p2","p3"].forEach((x,i)=>document.getElementById(x).innerHTML=S.machines.map(m=>`<option value="${m.id}" ${S.priorities[i]===m.id?"selected":""}>${m.name}</option>`).join(""))}
 function openStop(id){active=id;mt.textContent="Arrêt — "+S.machines.find(m=>m.id===id).name;mc.innerHTML=causes.map(c=>`<button onclick="pick('${c}')">${c}</button>`).join("")+`<button class="wide" onclick="closeM()">Annuler</button>`;modal.classList.add("show")}
 function pick(c){cause=c;mt.textContent="Qui doit intervenir ?";mc.innerHTML=`<button class="green" onclick="confirmS('team')">Équipe peut prendre en charge</button><button class="red" onclick="confirmS('maintenance')">Maintenance nécessaire</button><button class="wide" onclick="openStop(${active})">← Retour</button>`}
