@@ -4,64 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Assistant Secteur — V1.1 complète</title>
+<title>Assistant Secteur — V1.1 complète corrigée</title>
 <link rel="manifest" href="manifest.json">
 <style>
-:root{
-  --bg:#070b14;--panel:#0e1628;--panel2:#121d34;--line:#223250;
-  --text:#f5f7fb;--muted:#92a1bb;--green:#1fc77a;--red:#ff5e6d;
-  --blue:#4b86f7;--orange:#ff7a45;--yellow:#ffc857;--purple:#a98bff;
-}
+:root{--bg:#070b14;--panel:#0e1628;--line:#223250;--text:#f5f7fb;--muted:#92a1bb;--green:#1fc77a;--red:#ff5e6d;--blue:#4b86f7;--orange:#ff7a45;--yellow:#ffc857;--purple:#a98bff}
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(180deg,#070b14,#0a1020);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .app{max-width:820px;margin:auto;padding:18px 14px 94px;min-height:100vh}
 header{display:flex;justify-content:space-between;gap:12px;margin-bottom:15px}
 h1{margin:0;font-size:23px}.sub{font-size:12px;color:var(--muted);margin-top:4px}
 .badge{font-size:11px;color:#c4d4ff;border:1px solid #2c416b;background:#14213c;border-radius:999px;padding:7px 10px;height:max-content}
-.views{overflow:hidden}.view{display:none}.view.active{display:block;animation:slide .22s ease}
-@keyframes slide{from{opacity:.25;transform:translateX(12px)}to{opacity:1;transform:none}}
+.view{display:none}.view.active{display:block;animation:slide .22s ease}@keyframes slide{from{opacity:.25;transform:translateX(12px)}to{opacity:1;transform:none}}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:17px}
 .stat,.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px}
 .stat{padding:11px}.stat strong{display:block;font-size:21px}.stat span{font-size:9px;color:var(--muted)}
 .section-title{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 9px}
 .section-title h2{margin:0;font-size:15px}.hint{font-size:10px;color:var(--muted)}
-.list{display:grid;gap:9px}.card{padding:12px;position:relative;overflow:hidden}
-.card.prio{border-left:4px solid var(--orange)}
-.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.name{font-size:15px;font-weight:800}.meta{font-size:11px;color:var(--muted);margin-top:2px}
-.status{font-size:10px;font-weight:850;padding:6px 8px;border-radius:999px;white-space:nowrap}
-.running{color:#88e6ba;background:#123426;border:1px solid #275d45}
-.stopped{color:#ffacb6;background:#351923;border:1px solid #67303c}
-.changeover{color:#ffe09b;background:#362b13;border:1px solid #765d25}
-.maintenance{color:#ffd89b;background:#312711;border:1px solid #6c5520}
-.taken{color:#c3d4ff;background:#182b4e;border:1px solid #355a91}
+.list{display:grid;gap:9px}.card{padding:12px;position:relative;overflow:hidden}.card.prio{border-left:4px solid var(--orange)}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.name{font-size:15px;font-weight:800}.meta{font-size:11px;color:var(--muted);margin-top:2px}
+.status{font-size:10px;font-weight:850;padding:6px 8px;border-radius:999px;white-space:nowrap}.running{color:#88e6ba;background:#123426;border:1px solid #275d45}.stopped{color:#ffacb6;background:#351923;border:1px solid #67303c}.changeover{color:#ffe09b;background:#362b13;border:1px solid #765d25}.maintenance{color:#ffd89b;background:#312711;border:1px solid #6c5520}.taken{color:#c3d4ff;background:#182b4e;border:1px solid #355a91}
 .tag{display:inline-block;margin-top:8px;font-size:10px;color:#ffb39b;background:#291913;border:1px solid #613627;border-radius:7px;padding:4px 7px}
-.detail{margin-top:8px;font-size:12px}.detail b{color:#fff}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
-button,select,input{border-radius:10px;border:1px solid #2b3d61;background:#16223c;color:#dce7fb;padding:10px;font-weight:700;font-size:12px}
-button{cursor:pointer}.red{background:#301720;color:#ffadb5;border-color:#5c2a37}.green{background:#123426;color:#91e9be;border-color:#275d45}.blue{background:var(--blue);color:#fff;border-color:var(--blue)}.yellow{background:#342a14;color:#ffe0a0;border-color:#755d28}.purple{background:#251f43;color:#d7caff;border-color:#51458e}
+.detail{margin-top:8px;font-size:12px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.actions button:nth-child(3):last-child{grid-column:1/-1}
+button,select{border-radius:10px;border:1px solid #2b3d61;background:#16223c;color:#dce7fb;padding:10px;font-weight:700;font-size:12px}
+.red{background:#301720;color:#ffadb5;border-color:#5c2a37}.green{background:#123426;color:#91e9be;border-color:#275d45}.blue{background:var(--blue);color:#fff;border-color:var(--blue)}.yellow{background:#342a14;color:#ffe0a0;border-color:#755d28}.purple{background:#251f43;color:#d7caff;border-color:#51458e}
 .panel{padding:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.grid3 select{min-width:0}.panel>.blue{width:100%;margin-top:9px}
 .job{border-left:4px solid var(--yellow)}.assign{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:9px}
 .event{font-size:11px;background:#0b1323;border:1px solid #1d2a46;border-radius:10px;padding:9px}.event small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
 .empty{font-size:11px;color:var(--muted);padding:3px}
 nav{position:fixed;left:0;right:0;bottom:0;background:#070b14ee;backdrop-filter:blur(10px);border-top:1px solid #1f2d49;padding:9px 12px calc(9px + env(safe-area-inset-bottom));z-index:10}
 .nav{max-width:820px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:7px}.nav button.active{background:#1d345d;color:#fff;border-color:#3f67a1}
-.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;padding:10px;z-index:30}
-.modal.show{display:flex}.sheet{width:min(820px,100%);background:#10192d;border:1px solid #2c3e63;border-radius:18px;padding:15px;animation:up .2s ease}
-@keyframes up{from{opacity:.3;transform:translateY(28px)}to{opacity:1;transform:none}}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;padding:10px;z-index:30}.modal.show{display:flex}
+.sheet{width:min(820px,100%);background:#10192d;border:1px solid #2c3e63;border-radius:18px;padding:15px;animation:up .2s ease}@keyframes up{from{opacity:.3;transform:translateY(28px)}to{opacity:1;transform:none}}
 .sheet h3{margin:0 0 4px;font-size:17px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.choices button{min-height:50px}.wide{grid-column:1/-1}
 .notice{display:none;margin-bottom:12px;border:1px solid #66501e;background:#2b2212;color:#ffd991;padding:10px;border-radius:11px;font-size:12px}.notice.show{display:block}
 </style>
 </head>
 <body>
 <div class="app">
-<header>
-  <div><h1>Assistant Secteur</h1><div class="sub">Secteur meulage automatisé • V1.1 complète</div></div>
-  <div class="badge">Prototype local</div>
-</header>
+<header><div><h1>Assistant Secteur</h1><div class="sub">Secteur meulage automatisé • V1.1 complète corrigée</div></div><div class="badge">Prototype local</div></header>
 <div id="notice" class="notice"></div>
 
-<div class="views">
 <section id="viewSector" class="view active">
   <div class="stats">
     <div class="stat"><strong id="nRun">0</strong><span>En marche</span></div>
@@ -75,188 +57,100 @@ nav{position:fixed;left:0;right:0;bottom:0;background:#070b14ee;backdrop-filter:
 
 <section id="viewManager" class="view">
   <div class="section-title"><h2>Priorités</h2><span class="hint">Mode responsable</span></div>
-  <div class="panel">
-    <div class="grid3"><select id="p1"></select><select id="p2"></select><select id="p3"></select></div>
-    <button id="savePriority" class="blue">Appliquer les priorités</button>
-  </div>
-
-  <div class="section-title"><h2>Interventions en cours</h2><span class="hint">Arrêts et changements de série</span></div>
+  <div class="panel"><div class="grid3"><select id="p1"></select><select id="p2"></select><select id="p3"></select></div><button id="savePriority" class="blue">Appliquer les priorités</button></div>
+  <div class="section-title"><h2>Interventions en cours</h2><span class="hint">Arrêts + changements de série</span></div>
   <div id="jobs" class="list"></div>
-
-  <div class="section-title"><h2>Historique</h2></div>
-  <div id="history" class="list"></div>
+  <div class="section-title"><h2>Historique</h2></div><div id="history" class="list"></div>
 </section>
-</div>
 </div>
 
 <nav><div class="nav"><button id="tabSector" class="active">Secteur</button><button id="tabManager">Responsable</button></div></nav>
-
-<div id="modal" class="modal"><div class="sheet">
-  <h3 id="modalTitle">Action</h3>
-  <div id="modalSub" class="sub"></div>
-  <div id="modalChoices" class="choices"></div>
-</div></div>
+<div id="modal" class="modal"><div class="sheet"><h3 id="modalTitle"></h3><div id="modalSub" class="sub"></div><div id="modalChoices" class="choices"></div></div></div>
 
 <script>
-const defaultState={
-  machines:[
-    {id:1,name:"Machine 1",detail:"BERGER 1",state:"run",cause:"",handling:"",assigned:""},
-    {id:2,name:"Machine 2",detail:"BERGER 2",state:"run",cause:"",handling:"",assigned:""},
-    {id:3,name:"Machine 3",detail:"BERGER 3",state:"run",cause:"",handling:"",assigned:""},
-    {id:4,name:"Machine 4",detail:"BERGER 4",state:"run",cause:"",handling:"",assigned:""},
-    {id:5,name:"Machine 5",detail:"SIEPMANN",state:"run",cause:"",handling:"",assigned:""}
-  ],
-  priorities:[1,2,3], history:[]
-};
-let S=JSON.parse(localStorage.getItem("assistantSecteurV11Complete")||"null")||defaultState;
+const defaultState={machines:[
+{id:1,name:"Machine 1",detail:"BERGER 1",state:"run",cause:"",handling:"",assigned:""},
+{id:2,name:"Machine 2",detail:"BERGER 2",state:"run",cause:"",handling:"",assigned:""},
+{id:3,name:"Machine 3",detail:"BERGER 3",state:"run",cause:"",handling:"",assigned:""},
+{id:4,name:"Machine 4",detail:"BERGER 4",state:"run",cause:"",handling:"",assigned:""},
+{id:5,name:"Machine 5",detail:"SIEPMANN",state:"run",cause:"",handling:"",assigned:""}],
+priorities:[1,2,3],history:[]};
+
+let S=JSON.parse(localStorage.getItem("assistantSecteurV11CompleteCorrected")||"null")||defaultState;
 let activeId=null,pendingCause="";
 const causes=["Perte de pièce","Défaut capteur","Problème réglage","Meule / brossage","Robot / préhenseur","Évacuation","Autre"];
 const people=["Non affecté","Opérateur 1","Opérateur 2","Régleur","Responsable"];
-function save(){localStorage.setItem("assistantSecteurV11Complete",JSON.stringify(S))}
+
+function save(){localStorage.setItem("assistantSecteurV11CompleteCorrected",JSON.stringify(S))}
 function stamp(){return new Date().toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
 function log(text){S.history.unshift({text,time:stamp()});S.history=S.history.slice(0,30);save()}
 function stateInfo(m){
   if(m.state==="run")return["EN MARCHE","running"];
-  if(m.state==="changeover"){
-    if(m.handling==="taken")return["CHG SÉRIE • PRIS","taken"];
-    return["CHANGEMENT SÉRIE","changeover"];
-  }
+  if(m.state==="changeover")return[m.handling==="taken"?"CHG SÉRIE • PRIS":"CHANGEMENT SÉRIE",m.handling==="taken"?"taken":"changeover"];
   if(m.handling==="maintenance")return["MAINTENANCE","maintenance"];
   if(m.handling==="taken")return["PRIS EN CHARGE","taken"];
   return["ARRÊT","stopped"];
 }
 function render(){
-  const wrap=document.getElementById("machines");
-  wrap.innerHTML="";
+  const wrap=document.getElementById("machines"); wrap.innerHTML="";
   S.machines.forEach(m=>{
     const p=S.priorities.indexOf(m.id)+1, info=stateInfo(m);
-    const card=document.createElement("div");
-    card.className="card"+(p?" prio":"");
-    let detail="";
-    if(m.state==="changeover") detail=`<div class="detail"><b>Changement de série</b>${m.assigned?` • ${m.assigned}`:""}</div>`;
-    if(m.state==="stop") detail=`<div class="detail"><b>${m.cause}</b>${m.assigned?` • ${m.assigned}`:""}</div>`;
+    const card=document.createElement("div"); card.className="card"+(p?" prio":"");
+    let d="";
+    if(m.state==="changeover")d=`<div class="detail"><b>Changement de série</b>${m.assigned?` • ${m.assigned}`:""}</div>`;
+    if(m.state==="stop")d=`<div class="detail"><b>${m.cause}</b>${m.assigned?` • ${m.assigned}`:""}</div>`;
     let actions="";
     if(m.state==="run"){
       actions=`<button class="red" onclick="openStop(${m.id})">Déclarer un arrêt</button>
-               <button class="yellow" onclick="startChangeover(${m.id})">Changement de série</button>
-               <button onclick="quickPriority(${m.id})">${p?"Prioritaire ✓":"Mettre prioritaire"}</button>
-               <button class="purple" onclick="openManager()">Mode responsable</button>`;
+      <button class="yellow" onclick="startChangeover(${m.id})">Changement de série</button>`;
     }else if(m.state==="changeover"){
       actions=`<button class="green" onclick="finishChangeover(${m.id})">Série terminée</button>
-               <button onclick="take(${m.id})">Je prends</button>`;
+      <button onclick="take(${m.id})">Je prends</button>`;
     }else{
       actions=`<button class="green" onclick="resolve(${m.id})">Problème résolu</button>
-               ${m.handling==="maintenance"?`<button disabled>Maintenance demandée</button>`:`<button onclick="take(${m.id})">Je prends</button>`}`;
+      ${m.handling==="maintenance"?`<button disabled>Maintenance demandée</button>`:`<button onclick="take(${m.id})">Je prends</button>`}`;
     }
-    card.innerHTML=`<div class="top"><div><div class="name">${m.name}</div><div class="meta">${m.detail}</div></div>
-      <span class="status ${info[1]}">${info[0]}</span></div>
-      ${p?`<span class="tag">Priorité n°${p}</span>`:""}${detail}
-      <div class="actions">${actions}</div>`;
+    card.innerHTML=`<div class="top"><div><div class="name">${m.name}</div><div class="meta">${m.detail}</div></div><span class="status ${info[1]}">${info[0]}</span></div>
+    ${p?`<span class="tag">Priorité n°${p}</span>`:""}${d}<div class="actions">${actions}</div>`;
     wrap.appendChild(card);
   });
-  document.getElementById("nRun").textContent=S.machines.filter(m=>m.state==="run").length;
-  document.getElementById("nStop").textContent=S.machines.filter(m=>m.state==="stop").length;
-  document.getElementById("nChange").textContent=S.machines.filter(m=>m.state==="changeover").length;
+  nRun.textContent=S.machines.filter(m=>m.state==="run").length;
+  nStop.textContent=S.machines.filter(m=>m.state==="stop").length;
+  nChange.textContent=S.machines.filter(m=>m.state==="changeover").length;
   fillPriority(); renderJobs(); renderHistory(); save();
 }
-function fillPriority(){
-  ["p1","p2","p3"].forEach((id,i)=>{
-    document.getElementById(id).innerHTML=S.machines.map(m=>`<option value="${m.id}" ${S.priorities[i]===m.id?"selected":""}>${m.name}</option>`).join("");
-  });
-}
+function fillPriority(){["p1","p2","p3"].forEach((id,i)=>{document.getElementById(id).innerHTML=S.machines.map(m=>`<option value="${m.id}" ${S.priorities[i]===m.id?"selected":""}>${m.name}</option>`).join("")})}
 function openStop(id){
-  activeId=id;
-  document.getElementById("modalTitle").textContent="Arrêt — "+S.machines.find(m=>m.id===id).name;
-  document.getElementById("modalSub").textContent="Sélectionne la cause";
-  document.getElementById("modalChoices").innerHTML=causes.map(c=>`<button onclick="chooseCause('${c.replace(/'/g,"\\'")}')">${c}</button>`).join("")+
-    `<button class="wide" onclick="closeModal()">Annuler</button>`;
-  document.getElementById("modal").classList.add("show");
+  activeId=id; modalTitle.textContent="Arrêt — "+S.machines.find(m=>m.id===id).name; modalSub.textContent="Sélectionne la cause";
+  modalChoices.innerHTML=causes.map(c=>`<button onclick="chooseCause('${c.replace(/'/g,"\\'")}')">${c}</button>`).join("")+`<button class="wide" onclick="closeModal()">Annuler</button>`;
+  modal.classList.add("show");
 }
 function chooseCause(c){
-  pendingCause=c;
-  document.getElementById("modalTitle").textContent="Qui doit intervenir ?";
-  document.getElementById("modalSub").textContent=c;
-  document.getElementById("modalChoices").innerHTML=
-    `<button class="green" onclick="confirmStop('team')">Équipe peut prendre en charge</button>
-     <button class="red" onclick="confirmStop('maintenance')">Maintenance nécessaire</button>
-     <button class="wide" onclick="openStop(${activeId})">← Retour</button>`;
+  pendingCause=c; modalTitle.textContent="Qui doit intervenir ?"; modalSub.textContent=c;
+  modalChoices.innerHTML=`<button class="green" onclick="confirmStop('team')">Équipe peut prendre en charge</button><button class="red" onclick="confirmStop('maintenance')">Maintenance nécessaire</button><button class="wide" onclick="openStop(${activeId})">← Retour</button>`;
 }
 function confirmStop(mode){
-  const m=S.machines.find(x=>x.id===activeId);
-  m.state="stop";m.cause=pendingCause;m.handling=mode==="maintenance"?"maintenance":"waiting";m.assigned="";
-  log(`${m.name} — ${pendingCause} — ${mode==="maintenance"?"maintenance demandée":"équipe peut intervenir"}`);
-  closeModal();render();
+  const m=S.machines.find(x=>x.id===activeId); m.state="stop";m.cause=pendingCause;m.handling=mode==="maintenance"?"maintenance":"waiting";m.assigned="";
+  log(`${m.name} — ${pendingCause} — ${mode==="maintenance"?"maintenance demandée":"équipe peut intervenir"}`); closeModal();render();
 }
 function startChangeover(id){
-  const m=S.machines.find(x=>x.id===id);
-  m.state="changeover";m.cause="Changement de série";m.handling="waiting";m.assigned="";
-  log(`${m.name} — changement de série lancé`);
-  render();
+  const m=S.machines.find(x=>x.id===id); m.state="changeover";m.cause="Changement de série";m.handling="waiting";m.assigned="";
+  log(`${m.name} — changement de série lancé`); render();
 }
 function finishChangeover(id){
-  const m=S.machines.find(x=>x.id===id);
-  log(`${m.name} — changement de série terminé`);
-  Object.assign(m,{state:"run",cause:"",handling:"",assigned:""});
-  render();
+  const m=S.machines.find(x=>x.id===id); log(`${m.name} — changement de série terminé`);
+  Object.assign(m,{state:"run",cause:"",handling:"",assigned:""}); render();
 }
-function take(id){
-  const m=S.machines.find(x=>x.id===id);
-  m.handling="taken";m.assigned=m.assigned||"Opérateur";
-  log(`${m.name} — pris en charge par ${m.assigned}`);
-  render();
-}
-function resolve(id){
-  const m=S.machines.find(x=>x.id===id);
-  log(`${m.name} — problème résolu, remise en marche`);
-  Object.assign(m,{state:"run",cause:"",handling:"",assigned:""});
-  render();
-}
-function quickPriority(id){
-  if(S.priorities.includes(id)){flash("Cette machine est déjà prioritaire. Modifie l'ordre depuis Responsable.");return}
-  S.priorities[2]=id;log("Priorités modifiées : "+priorityNames().join(" > "));flash("Priorités mises à jour : "+priorityNames().join(" → "));render();
-}
-function priorityNames(){return S.priorities.map(id=>S.machines.find(m=>m.id===id).name)}
-function renderJobs(){
-  const jobs=S.machines.filter(m=>m.state!=="run"), el=document.getElementById("jobs");
-  if(!jobs.length){el.innerHTML='<div class="empty">Aucune intervention en cours.</div>';return}
-  el.innerHTML=jobs.map(m=>{
-    const info=stateInfo(m), label=m.state==="changeover"?"Changement de série":m.cause;
-    return `<div class="card job"><div class="top"><div><div class="name">${m.name}</div><div class="detail">${label}</div></div>
-      <span class="status ${info[1]}">${info[0]}</span></div>
-      <div class="assign"><select id="assign${m.id}">${people.map(p=>`<option ${m.assigned===p?"selected":""}>${p}</option>`).join("")}</select>
-      <button class="blue" onclick="assign(${m.id})">Affecter</button></div>
-      <div class="meta" style="margin-top:7px">${m.state==="changeover"?"Intervention de changement de série.":m.handling==="maintenance"?"Maintenance demandée.":"Intervention gérable par l'équipe."}</div></div>`;
-  }).join("");
-}
-function assign(id){
-  const m=S.machines.find(x=>x.id===id), v=document.getElementById("assign"+id).value;
-  m.assigned=v==="Non affecté"?"":v;
-  if(m.assigned)m.handling="taken"; else if(m.state==="stop"&&m.handling!=="maintenance")m.handling="waiting";
-  if(m.state==="changeover"&&!m.assigned)m.handling="waiting";
-  log(`${m.name} — affectation : ${m.assigned||"aucune"}`);
-  render();
-}
-function renderHistory(){
-  const el=document.getElementById("history");
-  el.innerHTML=S.history.length?S.history.map(e=>`<div class="event">${e.text}<small>${e.time}</small></div>`).join(""):'<div class="empty">Aucun événement.</div>';
-}
-function closeModal(){document.getElementById("modal").classList.remove("show");activeId=null}
-function flash(t){const n=document.getElementById("notice");n.textContent=t;n.classList.add("show");setTimeout(()=>n.classList.remove("show"),4500)}
-function switchTab(manager){
-  document.getElementById("viewSector").classList.toggle("active",!manager);
-  document.getElementById("viewManager").classList.toggle("active",manager);
-  document.getElementById("tabSector").classList.toggle("active",!manager);
-  document.getElementById("tabManager").classList.toggle("active",manager);
-}
-function openManager(){switchTab(true)}
-document.getElementById("tabSector").onclick=()=>switchTab(false);
-document.getElementById("tabManager").onclick=()=>switchTab(true);
-document.getElementById("savePriority").onclick=()=>{
-  const v=["p1","p2","p3"].map(id=>Number(document.getElementById(id).value));
-  if(new Set(v).size<3){flash("Choisis 3 machines différentes.");return}
-  S.priorities=v;log("Priorités modifiées : "+priorityNames().join(" > "));flash("Priorités mises à jour.");render();
-};
-document.getElementById("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+function take(id){const m=S.machines.find(x=>x.id===id);m.handling="taken";m.assigned=m.assigned||"Opérateur";log(`${m.name} — pris en charge par ${m.assigned}`);render()}
+function resolve(id){const m=S.machines.find(x=>x.id===id);log(`${m.name} — problème résolu, remise en marche`);Object.assign(m,{state:"run",cause:"",handling:"",assigned:""});render()}
+function assign(id){const m=S.machines.find(x=>x.id===id),v=document.getElementById("assign"+id).value;m.assigned=v==="Non affecté"?"":v;if(m.assigned)m.handling="taken";else m.handling=m.state==="stop"&&m.handling==="maintenance"?"maintenance":"waiting";log(`${m.name} — affectation : ${m.assigned||"aucune"}`);render()}
+function renderHistory(){history.innerHTML=S.history.length?S.history.map(e=>`<div class="event">${e.text}<small>${e.time}</small></div>`).join(""):'<div class="empty">Aucun événement.</div>'}
+function closeModal(){modal.classList.remove("show");activeId=null}
+function flash(t){notice.textContent=t;notice.classList.add("show");setTimeout(()=>notice.classList.remove("show"),3500)}
+function switchTab(manager){viewSector.classList.toggle("active",!manager);viewManager.classList.toggle("active",manager);tabSector.classList.toggle("active",!manager);tabManager.classList.toggle("active",manager)}
+tabSector.onclick=()=>switchTab(false);tabManager.onclick=()=>switchTab(true);
+savePriority.onclick=()=>{const v=["p1","p2","p3"].map(id=>Number(document.getElementById(id).value));if(new Set(v).size<3){flash("Choisis 3 machines différentes.");return}S.priorities=v;log("Priorités modifiées");flash("Priorités mises à jour.");render()};
+modal.onclick=e=>{if(e.target===modal)closeModal()};
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 render();
 </script>

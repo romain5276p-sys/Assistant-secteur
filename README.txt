@@ -1,18 +1,20 @@
-ASSISTANT SECTEUR — V1.1 COMPLÈTE
+ASSISTANT SECTEUR — V1.1 COMPLÈTE CORRIGÉE
 
-Fonctions :
 - 5 machines
-- 3 priorités modifiables
-- déclaration d'arrêt rapide
-- causes : perte de pièce, défaut capteur, réglage, meule/brossage, robot/préhenseur, évacuation, autre
-- choix équipe / maintenance
-- affectation à Opérateur 1, Opérateur 2, Régleur ou Responsable
-- bouton Je prends
-- résolution / remise en marche
-- CHANGEMENT DE SÉRIE réintégré comme état distinct d'une panne
-- affectation du changement de série
-- historique
-- transitions plus fluides
+- 3 priorités
+- Déclarer un arrêt
+- Causes rapides
+- Équipe ou maintenance
+- Affectation Opérateur 1 / Opérateur 2 / Régleur / Responsable
+- Je prends
+- Problème résolu
+- Changement de série visible directement sur chaque machine en marche
+- Changement de série traité comme un état séparé d'une panne
+- Affectation d'un changement de série
+- Série terminée
+- Historique
+- Transitions fluides
 
-Cette version est encore locale sur un seul appareil.
-La synchronisation multi-appareils viendra après validation de cette V1.1.
+Version locale, sans synchronisation multi-appareils pour le moment.
+
+CORRECTION INTERFACE : bouton « Mode responsable » retiré des cartes machines. L'accès Responsable reste uniquement dans la barre du bas.
