@@ -1,1 +1,8 @@
-{"name":"Assistant Secteur","short_name":"Secteur","start_url":"./?v=12","display":"standalone","background_color":"#070b14","theme_color":"#070b14","description":"Prototype V1.2 de suivi du secteur meulage automatisé"}
+{
+  "name":"Assistant Secteur V1.3",
+  "short_name":"Secteur V1.3",
+  "start_url":"./index.html?v=13",
+  "display":"standalone",
+  "background_color":"#070b14",
+  "theme_color":"#070b14"
+}
