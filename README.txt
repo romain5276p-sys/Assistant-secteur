@@ -1,22 +1,14 @@
-ASSISTANT SECTEUR — V1.1 COMPLÈTE CORRIGÉE
+ASSISTANT SECTEUR — V1.2
 
-- 5 machines
-- 3 priorités
-- Déclarer un arrêt
-- Causes rapides
-- Équipe ou maintenance
-- Affectation Opérateur 1 / Opérateur 2 / Régleur / Responsable
-- Je prends
-- Problème résolu
-- Changement de série visible directement sur chaque machine en marche
-- Changement de série traité comme un état séparé d'une panne
-- Affectation d'un changement de série
-- Série terminée
-- Historique
-- Transitions fluides
+Cette version conserve la vue Secteur validée et ajoute le pilotage Responsable :
+- 3 priorités modifiables
+- compteurs : à traiter / en cours / maintenance
+- attribution d'un arrêt à Opérateur 1 ou Régleur
+- orientation directe vers Maintenance
+- retrait d'une affectation
+- remise en marche / problème résolu
+- historique
+- chronomètre des arrêts
+- cache forcé sur la version 1.2
 
-Version locale, sans synchronisation multi-appareils pour le moment.
-
-CORRECTION INTERFACE : bouton « Mode responsable » retiré des cartes machines. L'accès Responsable reste uniquement dans la barre du bas.
-
-V1.1.1 : purge automatique des anciens caches/service workers + numéro de version visible.
+Pour GitHub Pages : remplacer index.html, sw.js, manifest.json et README.txt par ces fichiers.
