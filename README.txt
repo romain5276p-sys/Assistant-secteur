@@ -1,21 +1,17 @@
-ASSISTANT SECTEUR — V0
+ASSISTANT SECTEUR — V1
 
-Cette version est un prototype local, sans Firebase.
-
-Fonctions :
-- Vue des 5 machines
-- 3 priorités maximum
-- Profil Responsable / Opérateur-Régleur
-- Déclaration d'arrêt
-- Motifs d'arrêt
-- Bouton JE PRENDS
-- Bouton REPARTIE
-- Chrono d'arrêt
-- Historique local
-- Données sauvegardées dans le navigateur
+Contenu :
+- 5 machines avec état marche / arrêt
+- 3 machines prioritaires configurables
+- déclaration d'arrêt avec motif + commentaire
+- remise en marche
+- historique local des événements
+- alerte visuelle lors d'un changement de priorité
+- PWA installable
 
 IMPORTANT :
-Pour tester la synchronisation réelle entre 2 téléphones, il faudra l'étape suivante :
-héberger l'appli et connecter Firebase/Firestore.
+Cette V1 utilise localStorage. Les données restent sur l'appareil utilisé.
+Il n'y a pas encore de synchronisation entre plusieurs téléphones/tablettes/PC.
 
-Pour l'instant, index.html peut être ouvert dans un navigateur pour tester l'ergonomie.
+Mise en ligne GitHub Pages :
+Remplacer les fichiers de la V0 par ceux de cette V1 dans le repository.

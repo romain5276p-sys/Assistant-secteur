@@ -1,9 +1,9 @@
 {
-  "name": "Assistant Secteur V0",
+  "name": "Assistant Secteur",
   "short_name": "Secteur",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0f172a",
-  "icons": []
+  "background_color": "#070b14",
+  "theme_color": "#0b1020",
+  "description": "Prototype V1 de suivi d'un secteur de production."
 }
