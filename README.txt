@@ -18,3 +18,5 @@ ASSISTANT SECTEUR — V1.1 COMPLÈTE CORRIGÉE
 Version locale, sans synchronisation multi-appareils pour le moment.
 
 CORRECTION INTERFACE : bouton « Mode responsable » retiré des cartes machines. L'accès Responsable reste uniquement dans la barre du bas.
+
+V1.1.1 : purge automatique des anciens caches/service workers + numéro de version visible.

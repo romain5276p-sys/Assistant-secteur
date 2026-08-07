@@ -43,6 +43,7 @@ nav{position:fixed;left:0;right:0;bottom:0;background:#070b14ee;backdrop-filter:
 <div class="app">
 <header><div><h1>Assistant Secteur</h1><div class="sub">Secteur meulage automatisé • V1.1 complète corrigée</div></div><div class="badge">Prototype local</div></header>
 <div id="notice" class="notice"></div>
+<div style="text-align:center;font-size:11px;opacity:.55;margin:4px 0 8px">Version 1.1.1</div>
 
 <section id="viewSector" class="view active">
   <div class="stats">
@@ -151,7 +152,13 @@ function switchTab(manager){viewSector.classList.toggle("active",!manager);viewM
 tabSector.onclick=()=>switchTab(false);tabManager.onclick=()=>switchTab(true);
 savePriority.onclick=()=>{const v=["p1","p2","p3"].map(id=>Number(document.getElementById(id).value));if(new Set(v).size<3){flash("Choisis 3 machines différentes.");return}S.priorities=v;log("Priorités modifiées");flash("Priorités mises à jour.");render()};
 modal.onclick=e=>{if(e.target===modal)closeModal()};
-if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).finally(()=>{
+    caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).finally(()=>{
+      navigator.serviceWorker.register("sw.js?v=111").catch(()=>{})
+    })
+  })
+}
 render();
 </script>
 </body>
