@@ -1,5 +1,18 @@
-ASSISTANT SECTEUR — V1.1
+ASSISTANT SECTEUR — V1.1 COMPLÈTE
 
-Causes d'arrêt rapides, choix équipe/maintenance, affectation opérateur/régleur/responsable, prise en charge, résolution, historique, priorités et transitions plus fluides.
+Fonctions :
+- 5 machines
+- 3 priorités modifiables
+- déclaration d'arrêt rapide
+- causes : perte de pièce, défaut capteur, réglage, meule/brossage, robot/préhenseur, évacuation, autre
+- choix équipe / maintenance
+- affectation à Opérateur 1, Opérateur 2, Régleur ou Responsable
+- bouton Je prends
+- résolution / remise en marche
+- CHANGEMENT DE SÉRIE réintégré comme état distinct d'une panne
+- affectation du changement de série
+- historique
+- transitions plus fluides
 
-Prototype local : synchronisation multi-appareils prévue après validation de la V1.1.
+Cette version est encore locale sur un seul appareil.
+La synchronisation multi-appareils viendra après validation de cette V1.1.
