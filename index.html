@@ -588,20 +588,28 @@ const messaging = getMessaging(app);
 notifBtn.textContent = "🔔 Activer les notifications";
 notifBtn.style.cssText = "position:fixed;bottom:15px;right:15px;z-index:9999;padding:12px;border-radius:10px;";
 document.body.appendChild(notifBtn);
-
 notifBtn.onclick = async () => {
-  const permission = await Notification.requestPermission();
+  try {
+    const permission = await Notification.requestPermission();
 
-  if (permission === "granted") {
-const token = await getToken(messaging, {
-  vapidKey: "BBZvtt8AtVVAD8ZinnfI4DQ2lFscHpfYnjXlr8GwgXCu4k67wXlTMp67yr4HmwIYL7Sv37ZJhKBlDwzso-1ROKo"
-});
+    alert("Permission notifications : " + permission);
 
-console.log("Token FCM :", token);
-        notifBtn.textContent = "✅ Notifications activées";
-    notifBtn.disabled = true;
-  } else {
-    alert("Notifications refusées");
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: "BBZvtt8AtVVAD8ZinnfI4DQ2lFscHpfYnjXlr8GwgXCu4k67wX1TMp67yr4HmwIYL7Sv377JhKB1Dwzso-1R0Ko"
+      });
+
+      alert("TOKEN FCM OK : " + token);
+
+      notifBtn.textContent = "✅ Notifications activées";
+      notifBtn.disabled = true;
+    } else {
+      alert("Notifications refusées");
+    }
+
+  } catch (err) {
+    alert("ERREUR FIREBASE : " + err.name + " / " + err.message);
+    console.error(err);
   }
 };
   </script>
