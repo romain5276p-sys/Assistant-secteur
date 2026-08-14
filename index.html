@@ -132,5 +132,6 @@ $('disableSync').onclick=()=>{C={...C,url:"",key:"",room:""};localStorage.setIte
 
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).finally(()=>caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).finally(()=>navigator.serviceWorker.register("sw.js?v=13").catch(()=>{})))}
 render();startSyncLoop();
+     render();                           
 </script>
 </body></html>
