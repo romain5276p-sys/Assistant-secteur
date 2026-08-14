@@ -1,1370 +1,574 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#111827">
-
-<title>Assistant Secteur</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Assistant Secteur V3.1</title>
 <style>
-*{
-  box-sizing:border-box;
+:root{
+  --bg:#0b1220;--panel:#111c2e;--panel2:#17243a;--line:#2b3a55;
+  --txt:#eef4ff;--muted:#9db0cb;--green:#16a34a;--red:#dc2626;
+  --orange:#d97706;--blue:#2563eb;--purple:#7c3aed;--yellow:#facc15;
 }
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0f172a;
-  color:#f8fafc;
-}
-
-header{
-  padding:18px;
-  background:#111827;
-  border-bottom:1px solid #334155;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-h1{
-  margin:0;
-  font-size:22px;
-}
-
-.subtitle{
-  margin-top:5px;
-  color:#94a3b8;
-  font-size:13px;
-}
-
-main{
-  max-width:800px;
-  margin:auto;
-  padding:15px;
-}
-
-.panel{
-  background:#1e293b;
-  border-radius:15px;
-  padding:15px;
-  margin-bottom:15px;
-}
-
-.panel h2{
-  margin-top:0;
-  font-size:18px;
-}
-
-.roleRow{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-button,select{
-  border:none;
-  border-radius:10px;
-  padding:11px 12px;
-  font-size:15px;
-}
-
-button{
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.blue{
-  background:#2563eb;
-  color:white;
-}
-
-.green{
-  background:#16a34a;
-  color:white;
-}
-
-.orange{
-  background:#ea580c;
-  color:white;
-}
-
-.red{
-  background:#dc2626;
-  color:white;
-}
-
-.purple{
-  background:#7c3aed;
-  color:white;
-}
-
-.gray{
-  background:#475569;
-  color:white;
-}
-
-.machine{
-  background:#1e293b;
-  border-radius:15px;
-  padding:15px;
-  margin-bottom:12px;
-  border-left:7px solid #16a34a;
-}
-
-.machine.stop{
-  border-left-color:#dc2626;
-}
-
-.machine.changeover{
-  border-left-color:#f59e0b;
-}
-
-.machine.maintenance{
-  border-left-color:#7c3aed;
-}
-
-.machine.priority{
-  box-shadow:0 0 0 2px #facc15;
-}
-
-.machineTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.machineName{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.status{
-  font-size:13px;
-  padding:6px 8px;
-  border-radius:8px;
-  background:#334155;
-}
-
-.detail{
-  margin-top:10px;
-  color:#cbd5e1;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.actions button{
-  flex:1;
-  min-width:130px;
-}
-
-.priorityBox{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:8px;
-}
-
-.priorityLine{
-  display:grid;
-  grid-template-columns:45px 1fr;
-  align-items:center;
-  gap:8px;
-}
-
-.priorityLine strong{
-  color:#facc15;
-}
-
-select{
-  width:100%;
-  background:#334155;
-  color:white;
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:100;
-  padding:15px;
-  overflow:auto;
-}
-
-.modal.show{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.modalBox{
-  width:100%;
-  max-width:500px;
-  background:#1e293b;
-  padding:20px;
-  border-radius:15px;
-}
-
-.modalBox h2{
-  margin-top:0;
-}
-
-.causeButton{
-  display:block;
-  width:100%;
-  margin:7px 0;
-  background:#334155;
-  color:white;
-  text-align:left;
-}
-
-.historyItem{
-  border-bottom:1px solid #334155;
-  padding:10px 0;
-  font-size:14px;
-}
-
-.historyTime{
-  color:#94a3b8;
-  font-size:12px;
-  margin-top:3px;
-}
-
-.empty{
-  color:#94a3b8;
-  text-align:center;
-  padding:20px 5px;
-}
-
-.managerOnly{
-  display:none;
-}
-
-.notice{
-  background:#422006;
-  border:1px solid #a16207;
-  color:#fde68a;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:15px;
-  display:none;
-}
-
-footer{
-  text-align:center;
-  padding:20px;
-  color:#64748b;
-  font-size:12px;
-}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,select,input{font:inherit}
+button{border:0;border-radius:11px;padding:12px 14px;font-weight:750;cursor:pointer}
+button:active{transform:translateY(1px)}
+.wrap{max-width:900px;margin:auto;padding:14px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.head{max-width:900px;margin:auto;padding:14px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+h1{font-size:21px;margin:0}.small{font-size:12px;color:var(--muted)}
+.syncpill{padding:7px 10px;border-radius:999px;background:#23314a;color:var(--muted);font-size:12px;white-space:nowrap}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.panel h2{font-size:17px;margin:0 0 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+.btn-blue{background:var(--blue);color:white}.btn-green{background:var(--green);color:white}
+.btn-red{background:var(--red);color:white}.btn-orange{background:var(--orange);color:white}
+.btn-purple{background:var(--purple);color:white}.btn-gray{background:#334155;color:white}
+.btn-ghost{background:#22304a;color:#dbeafe}.btn-yellow{background:#a16207;color:white}
+.role.active{outline:2px solid white;outline-offset:1px}
+.priority-grid{display:grid;gap:8px}
+.priority-row{display:grid;grid-template-columns:44px 1fr;gap:8px;align-items:center}
+.priority-row b{color:var(--yellow)}
+select,input{width:100%;background:#22304a;color:white;border:1px solid #3b4b68;border-radius:10px;padding:11px}
+.machine{background:var(--panel);border:1px solid var(--line);border-left:7px solid var(--green);border-radius:16px;padding:14px;margin:12px 0}
+.machine.stop{border-left-color:var(--red)}.machine.change{border-left-color:var(--orange)}.machine.maint{border-left-color:var(--purple)}
+.machine.priority{box-shadow:0 0 0 1px rgba(250,204,21,.65)}
+.machine-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.machine-name{font-size:19px;font-weight:800}.badge{background:#24314a;border-radius:999px;padding:6px 8px;font-size:12px}
+.detail{margin-top:9px;color:#c8d5e8;line-height:1.45}
+.live-status{margin-top:10px;padding:9px 11px;border-radius:10px;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.live-status.run{background:#0d3020;color:#bbf7d0;border:1px solid #166534}
+.live-status.stop{background:#3f1515;color:#fecaca;border:1px solid #7f1d1d}
+.live-status.change{background:#3b2b0b;color:#fde68a;border:1px solid #8a5a0a}
+.live-dot{font-size:16px}.live-time{font-size:12px;font-weight:700;opacity:.9}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{flex:1;min-width:135px}
+.hidden{display:none!important}.empty{color:var(--muted);text-align:center;padding:16px}
+.hist{padding:10px 0;border-bottom:1px solid var(--line)}.hist:last-child{border-bottom:0}.time{font-size:11px;color:var(--muted);margin-top:3px}
+.notice{position:sticky;top:76px;z-index:15;border-radius:12px;padding:11px 12px;margin:10px 0;background:#3b2b0b;color:#fde68a;border:1px solid #765611}
+.good{background:#0d3020;color:#bbf7d0;border-color:#166534}.bad{background:#3f1515;color:#fecaca;border-color:#7f1d1d}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}.modal-card{width:min(520px,100%);max-height:88vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
+.cause{width:100%;text-align:left;background:#22304a;color:white;margin:5px 0}
+.settings-grid{display:grid;gap:10px}.help{font-size:12px;color:var(--muted);line-height:1.45}
+.footer{text-align:center;color:#60738f;font-size:11px;padding:18px}
+.counter{font-variant-numeric:tabular-nums}
+@media (min-width:700px){.priority-grid{grid-template-columns:repeat(3,1fr)}.priority-row{grid-template-columns:38px 1fr}}
 </style>
 </head>
-
 <body>
-
 <header>
-  <h1>Assistant Secteur</h1>
-  <div class="subtitle">
-    Secteur meulage • 5 machines
+  <div class="head">
+    <div>
+      <h1>Assistant Secteur</h1>
+      <div class="small">Secteur meulage • 5 machines • V3.1</div>
+    </div>
+    <div id="syncPill" class="syncpill">Local</div>
   </div>
 </header>
 
-<main>
+<main class="wrap">
+  <div id="notice" class="notice hidden"></div>
 
-<div id="errorBox" class="notice"></div>
-
-<section class="panel">
-  <h2>Mon rôle</h2>
-
-  <div class="roleRow">
-    <button class="blue" onclick="setRole('Opérateur 1')">
-      Opérateur 1
-    </button>
-
-    <button class="blue" onclick="setRole('Régleur')">
-      Régleur
-    </button>
-
-    <button class="purple" onclick="setRole('Responsable')">
-      Responsable
-    </button>
-  </div>
-
-  <div style="margin-top:10px;color:#94a3b8">
-    Connecté comme :
-    <strong id="roleLabel"></strong>
-  </div>
-</section>
-
-<section id="managerPanel" class="panel managerOnly">
-
-  <h2>Priorités secteur</h2>
-
-  <div class="priorityBox">
-
-    <div class="priorityLine">
-      <strong>P1</strong>
-      <select id="priority1"
-        onchange="changePriority(0,this.value)">
-      </select>
+  <section class="panel">
+    <h2>Mon rôle sur cet appareil</h2>
+    <div class="row">
+      <button class="role btn-blue" data-role="Opérateur 1">Opérateur 1</button>
+      <button class="role btn-blue" data-role="Régleur">Régleur</button>
+      <button class="role btn-purple" data-role="Responsable">Responsable</button>
     </div>
+    <div class="small" style="margin-top:9px">Cet appareil : <b id="roleLabel"></b></div>
+  </section>
 
-    <div class="priorityLine">
-      <strong>P2</strong>
-      <select id="priority2"
-        onchange="changePriority(1,this.value)">
-      </select>
+  <section id="managerPanel" class="panel hidden">
+    <h2>Priorités secteur</h2>
+    <div class="priority-grid">
+      <div class="priority-row"><b>P1</b><select id="p1"></select></div>
+      <div class="priority-row"><b>P2</b><select id="p2"></select></div>
+      <div class="priority-row"><b>P3</b><select id="p3"></select></div>
     </div>
+  </section>
 
-    <div class="priorityLine">
-      <strong>P3</strong>
-      <select id="priority3"
-        onchange="changePriority(2,this.value)">
-      </select>
+  <section id="machines"></section>
+
+  <section id="managerJobs" class="panel hidden">
+    <h2>Interventions en cours</h2>
+    <div id="jobs"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Historique des interventions</h2>
+    <div id="history"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Synchronisation & notifications</h2>
+    <div class="row">
+      <button id="openSettings" class="btn-ghost">Réglages Supabase</button>
+      <button id="enableNotif" class="btn-yellow">Activer notifications</button>
     </div>
+    <div class="row" style="margin-top:8px">
+      <button id="pushNow" class="btn-gray">Envoyer maintenant</button>
+      <button id="pullNow" class="btn-gray">Récupérer maintenant</button>
+    </div>
+    <div class="help" style="margin-top:9px">
+      Le mode local reste toujours fonctionnel. Sur GitHub Pages (HTTPS), les notifications navigateur peuvent s'afficher tant que l'application reste ouverte ou en arrière-plan.
+    </div>
+  </section>
 
-  </div>
-
-</section>
-
-<section>
-  <div id="machines"></div>
-</section>
-
-<section id="managerJobs" class="panel managerOnly">
-  <h2>Interventions en cours</h2>
-  <div id="jobs"></div>
-</section>
-
-<section class="panel">
-  <h2>Historique</h2>
-  <div id="history"></div>
-</section>
-
+  <div class="footer">Assistant Secteur V3.1 • statut temps réel + synchro multi-appareils</div>
 </main>
 
-<footer>
-Assistant Secteur • Version locale stable
-</footer>
-
-
 <div id="stopModal" class="modal">
-
-  <div class="modalBox">
-
-    <h2>Déclarer un arrêt</h2>
-
-    <div id="stopMachineName"
-         style="margin-bottom:12px;color:#94a3b8">
-    </div>
-
+  <div class="modal-card">
+    <h2 style="margin-top:0">Déclarer un arrêt</h2>
+    <div id="stopMachine" class="small" style="margin-bottom:10px"></div>
     <div id="causeList"></div>
-
-    <button
-      class="gray"
-      style="width:100%;margin-top:10px"
-      onclick="closeStopModal()">
-      Annuler
-    </button>
-
+    <button id="closeStop" class="btn-gray" style="width:100%;margin-top:8px">Annuler</button>
   </div>
-
 </div>
 
+<div id="settingsModal" class="modal">
+  <div class="modal-card">
+    <h2 style="margin-top:0">Réglages Supabase</h2>
+    <div class="settings-grid">
+      <label>Project URL<input id="sbUrl" placeholder="https://xxxxx.supabase.co"></label>
+      <label>Publishable key<input id="sbKey" placeholder="sb_publishable_..."></label>
+      <label>Code secteur<input id="roomId" placeholder="secteur-meulage"></label>
+      <div class="row">
+        <button id="saveSettings" class="btn-green">Enregistrer + tester</button>
+        <button id="disableSync" class="btn-gray">Rester en local</button>
+      </div>
+      <div id="settingsResult" class="help"></div>
+      <div class="help">
+        Important : le rôle de chaque téléphone reste local. Le Responsable peut donc rester Responsable pendant que l'autre appareil reste Opérateur 1 ou Régleur.
+      </div>
+    </div>
+    <button id="closeSettings" class="btn-ghost" style="width:100%;margin-top:12px">Fermer</button>
+  </div>
+</div>
 
 <script>
+(() => {
 "use strict";
 
-/* ================================
-   CONFIGURATION
-================================ */
-
-const STORAGE_KEY = "assistantSecteurStableV1";
-
-const DEFAULT_MACHINES = [
-  {id:1,name:"Machine 1"},
-  {id:2,name:"Machine 2"},
-  {id:3,name:"Machine 3"},
-  {id:4,name:"Machine 4"},
-  {id:5,name:"Machine 5"}
+const STATE_KEY="assistantSecteur_v3_state";
+const PREFS_KEY="assistantSecteur_v3_prefs";
+const SYNC_KEY="assistantSecteur_v3_sync";
+const VERSION=3;
+const POLL_MS=3000;
+const DEFAULT_MACHINES=[
+  {id:1,name:"Machine 1"},{id:2,name:"Machine 2"},{id:3,name:"Machine 3"},
+  {id:4,name:"Machine 4"},{id:5,name:"Machine 5"}
 ];
-
-const CAUSES = [
-  "Changement de série",
-  "Retouche robot / meulage",
-  "Changement de meule",
-  "Appro box vide",
-  "Évacuation box plein",
-  "En attente de pièce",
-  "Panne capteur",
-  "Panne inondation / manque d’eau",
-  "Perte de pièce en cours",
-  "Réunion",
-  "Autre"
+const CAUSES=[
+  "Changement de série","Retouche robot / meulage","Changement de meule",
+  "Appro box vide","Évacuation box plein","En attente de pièce","Panne capteur",
+  "Panne inondation / manque d’eau","Perte de pièce en cours","Réunion","Autre"
 ];
+const $=id=>document.getElementById(id);
+const iso=()=>new Date().toISOString();
+const pretty=t=>new Date(t).toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+const uid=()=>crypto.randomUUID?crypto.randomUUID():(Date.now()+"-"+Math.random().toString(16).slice(2));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const msTime=t=>Date.parse(t||0)||0;
 
-
-/* ================================
-   ÉTAT PAR DÉFAUT
-================================ */
-
-function createDefaultState(){
-
+function defaultMachine(m){
+  const t=iso();
+  return {...m,state:"run",cause:"",assigned:"",handling:"waiting",stoppedAt:null,interventionStartedAt:null,updatedAt:t};
+}
+function defaults(){
+  const t=iso();
+  return {version:VERSION,priorities:[1,2,3],prioritiesUpdatedAt:t,machines:DEFAULT_MACHINES.map(defaultMachine),history:[],updatedAt:t};
+}
+function defaultPrefs(){return {role:"Opérateur 1"}}
+function defaultSync(){return {url:"",key:"",room:"secteur-meulage",enabled:false}}
+function readJson(key,fallback){
+  try{const x=JSON.parse(localStorage.getItem(key)||"null");return x??fallback}catch{return fallback}
+}
+function sanitizeMachine(base,m={}){
   return {
-
-    role:"Opérateur 1",
-
-    priorities:[1,2,3],
-
-    machines:DEFAULT_MACHINES.map(m=>({
-      id:m.id,
-      name:m.name,
-      state:"run",
-      cause:"",
-      assigned:"",
-      handling:"waiting",
-      startedAt:null
-    })),
-
-    history:[]
-
+    id:base.id,name:base.name,
+    state:["run","stop","change"].includes(m.state)?m.state:"run",
+    cause:typeof m.cause==="string"?m.cause:"",
+    assigned:typeof m.assigned==="string"?m.assigned:"",
+    handling:typeof m.handling==="string"?m.handling:"waiting",
+    stoppedAt:m.stoppedAt||null,
+    interventionStartedAt:m.interventionStartedAt||null,
+    updatedAt:typeof m.updatedAt==="string"?m.updatedAt:iso()
   };
-
 }
-
-
-/* ================================
-   CHARGEMENT SÉCURISÉ
-================================ */
-
-function loadState(){
-
-  try{
-
-    const raw=localStorage.getItem(STORAGE_KEY);
-
-    if(!raw){
-      return createDefaultState();
-    }
-
-    const parsed=JSON.parse(raw);
-
-    if(
-      !parsed ||
-      !Array.isArray(parsed.machines) ||
-      parsed.machines.length!==5
-    ){
-      return createDefaultState();
-    }
-
-    if(!Array.isArray(parsed.priorities)){
-      parsed.priorities=[1,2,3];
-    }
-
-    if(!Array.isArray(parsed.history)){
-      parsed.history=[];
-    }
-
-    if(!parsed.role){
-      parsed.role="Opérateur 1";
-    }
-
-    return parsed;
-
-  }catch(error){
-
-    console.error("Erreur chargement :",error);
-
-    return createDefaultState();
-
-  }
-
+function sanitizeState(x){
+  const d=defaults(); if(!x||typeof x!=="object")return d;
+  const map=new Map((Array.isArray(x.machines)?x.machines:[]).map(m=>[Number(m.id),m]));
+  d.machines=DEFAULT_MACHINES.map(b=>sanitizeMachine(b,map.get(b.id)||{}));
+  const p=(Array.isArray(x.priorities)?x.priorities:[]).map(Number).filter(n=>n>=1&&n<=5);
+  d.priorities=[...new Set(p)];
+  for(const m of d.machines){if(d.priorities.length>=3)break;if(!d.priorities.includes(m.id))d.priorities.push(m.id)}
+  d.priorities=d.priorities.slice(0,3);
+  d.prioritiesUpdatedAt=typeof x.prioritiesUpdatedAt==="string"?x.prioritiesUpdatedAt:iso();
+  d.history=(Array.isArray(x.history)?x.history:[]).filter(e=>e&&e.id).slice(0,200);
+  d.updatedAt=typeof x.updatedAt==="string"?x.updatedAt:iso();
+  return d;
 }
-
-let S=loadState();
-
+function sanitizePrefs(x){
+  const role=["Opérateur 1","Régleur","Responsable"].includes(x?.role)?x.role:"Opérateur 1";
+  return {role};
+}
+function sanitizeSync(x){
+  return {url:x?.url||"",key:x?.key||"",room:x?.room||"secteur-meulage",enabled:!!x?.enabled};
+}
+let state=sanitizeState(readJson(STATE_KEY,null));
+let prefs=sanitizePrefs(readJson(PREFS_KEY,null));
+let sync=sanitizeSync(readJson(SYNC_KEY,null));
 let activeMachineId=null;
+let syncing=false;
+let pushTimer=null;
 
-
-/* ================================
-   OUTILS
-================================ */
-
-function $(id){
-  return document.getElementById(id);
-}
-
-function save(){
-
-  try{
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(S)
-    );
-
-  }catch(error){
-
-    console.error("Erreur sauvegarde :",error);
-
-  }
-
-}
-
-function timestamp(){
-
-  return new Date().toLocaleString(
-    "fr-FR",
-    {
-      day:"2-digit",
-      month:"2-digit",
-      hour:"2-digit",
-      minute:"2-digit"
-    }
-  );
-
-}
-
-function logEvent(text){
-
-  S.history.unshift({
-    text:text,
-    time:timestamp()
+function saveLocal(){state.updatedAt=iso();localStorage.setItem(STATE_KEY,JSON.stringify(state))}
+function savePrefs(){localStorage.setItem(PREFS_KEY,JSON.stringify(prefs))}
+function saveSync(){localStorage.setItem(SYNC_KEY,JSON.stringify(sync))}
+function actor(){return prefs.role}
+function addEvent(type,m,text,extra={}){
+  const ts=iso();
+  state.history.unshift({
+    id:uid(),type,actor:actor(),machineId:m?.id??null,machineName:m?.name??"",
+    cause:m?.cause??"",timestamp:ts,time:pretty(ts),text,...extra
   });
-
-  if(S.history.length>100){
-    S.history=S.history.slice(0,100);
-  }
-
+  state.history=state.history.slice(0,200);
 }
-
-
-/* ================================
-   RÔLE
-================================ */
-
-function setRole(role){
-
-  S.role=role;
-
-  save();
-
-  render();
-
+function durationText(start,end=Date.now()){
+  if(!start)return "";
+  let s=Math.max(0,Math.floor((end-new Date(start).getTime())/1000));
+  const min=Math.floor(s/60),sec=s%60;
+  return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
-
-
-/* ================================
-   PRIORITÉS
-================================ */
-
-function changePriority(position,value){
-
-  const machineId=Number(value);
-
-  S.priorities[position]=machineId;
-
-  /*
-    Empêche une même machine
-    d'être présente plusieurs fois.
-  */
-
-  S.priorities=S.priorities.filter(
-    (id,index,array)=>
-      array.indexOf(id)===index
-  );
-
-  for(const machine of S.machines){
-
-    if(S.priorities.length>=3){
-      break;
-    }
-
-    if(!S.priorities.includes(machine.id)){
-      S.priorities.push(machine.id);
-    }
-
-  }
-
-  logEvent(
-    "Priorités modifiées : "+
-    S.priorities
-      .map((id,i)=>
-        "P"+(i+1)+" Machine "+id
-      )
-      .join(" • ")
-  );
-
-  save();
-
-  render();
-
+function notice(msg,type=""){
+  const el=$("notice");el.textContent=msg;el.className="notice"+(type?" "+type:"");
+  clearTimeout(notice.t);notice.t=setTimeout(()=>el.classList.add("hidden"),5000);
 }
+function btn(text,cls,fn){
+  const b=document.createElement("button");b.textContent=text;b.className=cls;b.addEventListener("click",fn);return b;
+}
+function machine(id){return state.machines.find(m=>m.id===id)}
 
-
-/* ================================
-   ARRÊTS
-================================ */
-
-function openStopModal(id){
-
-  activeMachineId=id;
-
-  const machine=S.machines.find(
-    m=>m.id===id
-  );
-
-  if(!machine){
-    return;
+function setRole(role){prefs.role=role;savePrefs();render();notice("Rôle de cet appareil : "+role,"good")}
+function changePriority(i,val){
+  const id=Number(val),next=[...state.priorities];next[i]=id;const out=[];
+  for(const n of next)if(!out.includes(n))out.push(n);
+  for(const m of state.machines){if(out.length>=3)break;if(!out.includes(m.id))out.push(m.id)}
+  state.priorities=out.slice(0,3);state.prioritiesUpdatedAt=iso();
+  addEvent("priority",null,"Priorités modifiées : "+state.priorities.map((n,j)=>`P${j+1} Machine ${n}`).join(" • "));
+  saveAndRender();
+}
+function openStop(id){
+  activeMachineId=id;const m=machine(id);if(!m)return;
+  $("stopMachine").textContent=m.name;$("causeList").innerHTML="";
+  for(const cause of CAUSES){
+    const b=document.createElement("button");b.className="cause";b.textContent=cause;
+    b.addEventListener("click",()=>declareStop(cause));$("causeList").appendChild(b);
   }
-
-  $("stopMachineName").textContent=
-    machine.name;
-
-  const container=$("causeList");
-
-  container.innerHTML="";
-
-  CAUSES.forEach(cause=>{
-
-    const button=document.createElement("button");
-
-    button.className="causeButton";
-
-    button.textContent=cause;
-
-    button.onclick=function(){
-      declareStop(cause);
-    };
-
-    container.appendChild(button);
-
-  });
-
   $("stopModal").classList.add("show");
-
 }
-
-function closeStopModal(){
-
-  $("stopModal").classList.remove("show");
-
-  activeMachineId=null;
-
-}
-
+function closeStop(){$("stopModal").classList.remove("show");activeMachineId=null}
 function declareStop(cause){
-
-  const machine=S.machines.find(
-    m=>m.id===activeMachineId
-  );
-
-  if(!machine){
-    closeStopModal();
-    return;
-  }
-
-  machine.state=
-    cause==="Changement de série"
-      ?"changeover"
-      :"stop";
-
-  machine.cause=cause;
-
-  machine.startedAt=Date.now();
-
-  machine.assigned="";
-
-  machine.handling="waiting";
-
-  logEvent(
-    machine.name+
-    " : arrêt déclaré — "+
-    cause
-  );
-
-  closeStopModal();
-
-  save();
-
-  render();
-
+  const m=machine(activeMachineId);if(!m)return;
+  const t=iso();
+  m.state=cause==="Changement de série"?"change":"stop";m.cause=cause;m.assigned="";m.handling="waiting";
+  m.stoppedAt=t;m.interventionStartedAt=null;m.updatedAt=t;
+  addEvent(m.state==="change"?"changeover":"stop",m,`${m.name} : ${cause} déclaré par ${actor()}`);
+  closeStop();saveAndRender();
 }
-
-
-/* ================================
-   PRISE EN CHARGE
-================================ */
-
+function quickChange(id){activeMachineId=id;declareStop("Changement de série")}
 function takeJob(id){
-
-  const machine=S.machines.find(
-    m=>m.id===id
-  );
-
-  if(!machine){
-    return;
-  }
-
-  machine.assigned=S.role;
-
-  machine.handling="taken";
-
-  logEvent(
-    machine.name+
-    " pris en charge par "+
-    S.role
-  );
-
-  save();
-
-  render();
-
+  const m=machine(id);if(!m)return;
+  const t=iso();m.assigned=actor();m.handling="taken";m.interventionStartedAt=t;m.updatedAt=t;
+  addEvent("take",m,`${m.name} : prise en charge par ${actor()}`);saveAndRender();
 }
-
-function requestMaintenance(id){
-
-  const machine=S.machines.find(
-    m=>m.id===id
-  );
-
-  if(!machine){
-    return;
-  }
-
-  machine.handling="maintenance";
-
-  machine.assigned="Maintenance";
-
-  logEvent(
-    "Maintenance demandée sur "+
-    machine.name
-  );
-
-  save();
-
-  render();
-
+function acceptAssigned(id){
+  const m=machine(id);if(!m)return;
+  const t=iso();m.assigned=actor();m.handling="taken";m.interventionStartedAt=t;m.updatedAt=t;
+  addEvent("accept",m,`${m.name} : intervention acceptée par ${actor()}`);saveAndRender();
 }
-
-
-/* ================================
-   RESPONSABLE
-================================ */
-
-function managerAssign(id,person){
-
-  const machine=S.machines.find(
-    m=>m.id===id
-  );
-
-  if(!machine){
-    return;
-  }
-
-  machine.assigned=person;
-
-  machine.handling="assigned";
-
-  logEvent(
-    machine.name+
-    " attribuée à "+
-    person
-  );
-
-  save();
-
-  render();
-
+function requestMaint(id){
+  const m=machine(id);if(!m)return;
+  const t=iso();m.assigned="Maintenance";m.handling="maintenance";m.updatedAt=t;
+  addEvent("maintenance",m,`${m.name} : maintenance demandée par ${actor()}`);saveAndRender();
 }
-
-function managerMaintenance(id){
-
-  const machine=S.machines.find(
-    m=>m.id===id
-  );
-
-  if(!machine){
-    return;
-  }
-
-  machine.assigned="Maintenance";
-
-  machine.handling="maintenance";
-
-  logEvent(
-    machine.name+
-    " orientée vers maintenance"
-  );
-
-  save();
-
-  render();
-
+function assign(id,person){
+  const m=machine(id);if(!m)return;
+  const t=iso();m.assigned=person;m.handling=person==="Maintenance"?"maintenance":"assigned";m.updatedAt=t;
+  addEvent("assign",m,`${m.name} : intervention attribuée à ${person} par ${actor()}`);
+  saveAndRender();
 }
-
-
-/* ================================
-   REDÉMARRAGE
-================================ */
-
-function resolveMachine(id){
-
-  const machine=S.machines.find(
-    m=>m.id===id
-  );
-
-  if(!machine){
-    return;
-  }
-
-  logEvent(
-    machine.name+
-    " : problème résolu / machine repartie"
-  );
-
-  machine.state="run";
-
-  machine.cause="";
-
-  machine.assigned="";
-
-  machine.handling="waiting";
-
-  machine.startedAt=null;
-
-  save();
-
-  render();
-
+function resolve(id){
+  const m=machine(id);if(!m)return;
+  const cause=m.cause;
+  const duration=durationText(m.stoppedAt);
+  addEvent("restart",m,`${m.name} : machine repartie — relancée par ${actor()}${duration?` • arrêt ${duration}`:""}`,{duration,cause});
+  const t=iso();
+  Object.assign(m,{state:"run",cause:"",assigned:"",handling:"waiting",stoppedAt:null,interventionStartedAt:null,updatedAt:t});
+  saveAndRender();
 }
-
-
-/* ================================
-   AFFICHAGE RÔLE
-================================ */
 
 function renderRole(){
-
-  const label=$("roleLabel");
-
-  if(label){
-    label.textContent=S.role;
-  }
-
-  const manager=
-    S.role==="Responsable";
-
-  document
-    .querySelectorAll(".managerOnly")
-    .forEach(element=>{
-
-      element.style.display=
-        manager?"block":"none";
-
-    });
-
+  $("roleLabel").textContent=prefs.role;
+  document.querySelectorAll(".role").forEach(b=>b.classList.toggle("active",b.dataset.role===prefs.role));
+  const manager=prefs.role==="Responsable";
+  $("managerPanel").classList.toggle("hidden",!manager);
+  $("managerJobs").classList.toggle("hidden",!manager);
 }
-
-
-/* ================================
-   AFFICHAGE PRIORITÉS
-================================ */
-
 function renderPriorities(){
-
-  for(let i=0;i<3;i++){
-
-    const select=$(
-      "priority"+(i+1)
-    );
-
-    if(!select){
-      continue;
-    }
-
-    select.innerHTML="";
-
-    S.machines.forEach(machine=>{
-
-      const option=
-        document.createElement("option");
-
-      option.value=machine.id;
-
-      option.textContent=
-        machine.name;
-
-      if(
-        S.priorities[i]===
-        machine.id
-      ){
-        option.selected=true;
-      }
-
-      select.appendChild(option);
-
-    });
-
-  }
-
+  ["p1","p2","p3"].forEach((id,i)=>{
+    const s=$(id);s.innerHTML="";
+    for(const m of state.machines){const o=document.createElement("option");o.value=m.id;o.textContent=m.name;o.selected=state.priorities[i]===m.id;s.appendChild(o)}
+  });
 }
-
-
-/* ================================
-   AFFICHAGE MACHINES
-================================ */
-
+function canThisRoleRestart(m){
+  if(prefs.role==="Responsable")return true;
+  if(m.handling==="taken"&&m.assigned===prefs.role)return true;
+  if(m.handling==="maintenance"&&prefs.role==="Régleur")return true;
+  return false;
+}
 function renderMachines(){
+  const c=$("machines");c.innerHTML="";
+  for(const m of state.machines){
+    const card=document.createElement("article");
+    card.className="machine"+(m.state==="stop"?" stop":m.state==="change"?" change":"")+(m.handling==="maintenance"?" maint":"")+(state.priorities.includes(m.id)?" priority":"");
+    const pi=state.priorities.indexOf(m.id);
+    const status=m.state==="run"?"EN PROD":m.state==="change"?"CHANGEMENT DE SÉRIE":"À L'ARRÊT";
+    card.innerHTML=`<div class="machine-top"><div class="machine-name">${esc(m.name)}${pi>=0?` • P${pi+1}`:""}</div><div class="badge">${status}</div></div>`;
 
-  const container=$("machines");
-
-  if(!container){
-    return;
-  }
-
-  container.innerHTML="";
-
-  S.machines.forEach(machine=>{
-
-    const card=
-      document.createElement("div");
-
-    let cardClass="machine";
-
-    if(machine.state==="stop"){
-      cardClass+=" stop";
-    }
-
-    if(machine.state==="changeover"){
-      cardClass+=" changeover";
-    }
-
-    if(machine.handling==="maintenance"){
-      cardClass+=" maintenance";
-    }
-
-    if(S.priorities.includes(machine.id)){
-      cardClass+=" priority";
-    }
-
-    card.className=cardClass;
-
-    let status="EN MARCHE";
-
-    if(machine.state==="stop"){
-      status="ARRÊT";
-    }
-
-    if(machine.state==="changeover"){
-      status="CHGT SÉRIE";
-    }
-
-    const priorityIndex=
-      S.priorities.indexOf(machine.id);
-
-    const priority=
-      priorityIndex>=0
-        ?"P"+(priorityIndex+1)
-        :"";
-
-    const top=
-      document.createElement("div");
-
-    top.className="machineTop";
-
-    const name=
-      document.createElement("div");
-
-    name.className="machineName";
-
-    name.textContent=
-      machine.name+
-      (priority?" • "+priority:"");
-
-    const statusElement=
-      document.createElement("div");
-
-    statusElement.className="status";
-
-    statusElement.textContent=status;
-
-    top.appendChild(name);
-    top.appendChild(statusElement);
-
-    card.appendChild(top);
-
-
-    if(machine.state!=="run"){
-
-      const detail=
-        document.createElement("div");
-
-      detail.className="detail";
-
-      detail.textContent=
-        machine.cause || "Arrêt";
-
-      if(machine.assigned){
-
-        detail.textContent+=
-          " • "+machine.assigned;
-
-      }
-
-      card.appendChild(detail);
-
-    }
-
-
-    const actions=
-      document.createElement("div");
-
-    actions.className="actions";
-
-
-    if(machine.state==="run"){
-
-      const stopButton=
-        document.createElement("button");
-
-      stopButton.className="red";
-
-      stopButton.textContent=
-        "Déclarer arrêt";
-
-      stopButton.onclick=function(){
-        openStopModal(machine.id);
-      };
-
-      const changeButton=
-        document.createElement("button");
-
-      changeButton.className="orange";
-
-      changeButton.textContent=
-        "Changement de série";
-
-      changeButton.onclick=function(){
-
-        activeMachineId=machine.id;
-
-        declareStop(
-          "Changement de série"
-        );
-
-      };
-
-      actions.appendChild(stopButton);
-      actions.appendChild(changeButton);
-
+    const live=document.createElement("div");
+    live.className="live-status "+(m.state==="run"?"run":m.state==="change"?"change":"stop");
+    const dot=m.state==="run"?"🟢":m.state==="change"?"🟠":"🔴";
+    let liveHtml=`<span><span class="live-dot">${dot}</span> ${status}</span>`;
+    if(m.state!=="run" && m.stoppedAt){
+      liveHtml+=`<span class="live-time">Depuis <span class="counter" data-start="${esc(m.stoppedAt)}">${durationText(m.stoppedAt)}</span></span>`;
     }else{
-
-      if(S.role!=="Responsable"){
-
-        const takeButton=
-          document.createElement("button");
-
-        takeButton.className="blue";
-
-        takeButton.textContent=
-          "Je prends en charge";
-
-        takeButton.onclick=function(){
-          takeJob(machine.id);
-        };
-
-        const maintenanceButton=
-          document.createElement("button");
-
-        maintenanceButton.className="purple";
-
-        maintenanceButton.textContent=
-          "Demande maintenance";
-
-        maintenanceButton.onclick=function(){
-          requestMaintenance(machine.id);
-        };
-
-        actions.appendChild(takeButton);
-        actions.appendChild(
-          maintenanceButton
-        );
-
-      }
-
-
-      if(S.role==="Responsable"){
-
-        const resolveButton=
-          document.createElement("button");
-
-        resolveButton.className="green";
-
-        resolveButton.textContent=
-          "Machine repartie";
-
-        resolveButton.onclick=function(){
-          resolveMachine(machine.id);
-        };
-
-        actions.appendChild(resolveButton);
-
-      }
-
+      liveHtml+=`<span class="live-time">Temps réel</span>`;
     }
+    live.innerHTML=liveHtml;
+    card.appendChild(live);
 
-    card.appendChild(actions);
-
-    container.appendChild(card);
-
-  });
-
+    if(m.state!=="run"){
+      const d=document.createElement("div");d.className="detail";
+      let txt=m.cause||"Arrêt";
+      if(m.assigned)txt+=` • ${m.handling==="assigned"?"Attribuée à":m.handling==="taken"?"Prise en charge par":"Orientée vers"} ${m.assigned}`;
+      d.innerHTML=txt;card.appendChild(d);
+    }
+    const a=document.createElement("div");a.className="actions";
+    if(m.state==="run"){
+      a.append(btn("Déclarer arrêt","btn-red",()=>openStop(m.id)));
+      a.append(btn("Changement de série","btn-orange",()=>quickChange(m.id)));
+    }else if(prefs.role==="Responsable"){
+      a.append(btn("Machine repartie","btn-green",()=>resolve(m.id)));
+    }else if(m.handling==="assigned"&&m.assigned===prefs.role){
+      a.append(btn("Accepter l'intervention","btn-blue",()=>acceptAssigned(m.id)));
+      a.append(btn("Demande maintenance","btn-purple",()=>requestMaint(m.id)));
+    }else if(canThisRoleRestart(m)){
+      a.append(btn("Machine repartie","btn-green",()=>resolve(m.id)));
+      if(m.handling!=="maintenance")a.append(btn("Demande maintenance","btn-purple",()=>requestMaint(m.id)));
+    }else if(m.handling==="waiting"){
+      a.append(btn("Je prends en charge","btn-blue",()=>takeJob(m.id)));
+      a.append(btn("Demande maintenance","btn-purple",()=>requestMaint(m.id)));
+    }else if(m.assigned&&m.assigned!==prefs.role){
+      const info=document.createElement("div");info.className="detail";info.textContent=`Intervention attribuée à ${m.assigned}`;a.appendChild(info);
+    }else{
+      a.append(btn("Je prends en charge","btn-blue",()=>takeJob(m.id)));
+    }
+    card.appendChild(a);c.appendChild(card);
+  }
 }
-
-
-/* ================================
-   INTERVENTIONS RESPONSABLE
-================================ */
-
 function renderJobs(){
-
-  const container=$("jobs");
-
-  if(!container){
-    return;
+  const c=$("jobs");c.innerHTML="";const active=state.machines.filter(m=>m.state!=="run");
+  if(!active.length){c.innerHTML='<div class="empty">Aucun arrêt à traiter.</div>';return}
+  for(const m of active){
+    const box=document.createElement("div");box.className="hist";
+    const t=document.createElement("b");t.textContent=`${m.name} — ${m.cause}`;box.appendChild(t);
+    if(m.assigned){const d=document.createElement("div");d.className="small";d.style.marginTop="4px";d.textContent=`Affectation : ${m.assigned}`;box.appendChild(d)}
+    const a=document.createElement("div");a.className="actions";
+    a.append(btn("Opérateur 1","btn-blue",()=>assign(m.id,"Opérateur 1")));
+    a.append(btn("Régleur","btn-blue",()=>assign(m.id,"Régleur")));
+    a.append(btn("Maintenance","btn-purple",()=>assign(m.id,"Maintenance")));
+    a.append(btn("Machine repartie","btn-green",()=>resolve(m.id)));
+    box.appendChild(a);c.appendChild(box);
   }
-
-  container.innerHTML="";
-
-  const active=S.machines.filter(
-    m=>m.state!=="run"
-  );
-
-  if(active.length===0){
-
-    container.innerHTML=
-      '<div class="empty">'+
-      'Aucun arrêt à traiter.'+
-      '</div>';
-
-    return;
-
-  }
-
-  active.forEach(machine=>{
-
-    const box=
-      document.createElement("div");
-
-    box.className="historyItem";
-
-    const title=
-      document.createElement("strong");
-
-    title.textContent=
-      machine.name+
-      " — "+
-      machine.cause;
-
-    box.appendChild(title);
-
-    const actions=
-      document.createElement("div");
-
-    actions.className="actions";
-
-    const op=
-      document.createElement("button");
-
-    op.className="blue";
-
-    op.textContent="Opérateur 1";
-
-    op.onclick=function(){
-      managerAssign(
-        machine.id,
-        "Opérateur 1"
-      );
-    };
-
-    const reg=
-      document.createElement("button");
-
-    reg.className="blue";
-
-    reg.textContent="Régleur";
-
-    reg.onclick=function(){
-      managerAssign(
-        machine.id,
-        "Régleur"
-      );
-    };
-
-    const maintenance=
-      document.createElement("button");
-
-    maintenance.className="purple";
-
-    maintenance.textContent=
-      "Maintenance";
-
-    maintenance.onclick=function(){
-      managerMaintenance(
-        machine.id
-      );
-    };
-
-    actions.appendChild(op);
-    actions.appendChild(reg);
-    actions.appendChild(maintenance);
-
-    box.appendChild(actions);
-
-    container.appendChild(box);
-
-  });
-
 }
-
-
-/* ================================
-   HISTORIQUE
-================================ */
-
 function renderHistory(){
-
-  const container=$("history");
-
-  if(!container){
-    return;
+  const c=$("history");c.innerHTML="";
+  if(!state.history.length){c.innerHTML='<div class="empty">Aucun événement enregistré.</div>';return}
+  for(const h of [...state.history].sort((a,b)=>msTime(b.timestamp)-msTime(a.timestamp)).slice(0,60)){
+    const d=document.createElement("div");d.className="hist";
+    d.innerHTML=`<div>${esc(h.text||"")}</div><div class="time">${esc(h.time||pretty(h.timestamp))}</div>`;
+    c.appendChild(d);
   }
+}
+function renderSyncPill(){
+  const p=$("syncPill");
+  if(!sync.enabled){p.textContent="Local";return}
+  p.textContent=syncing?"Synchro…":"Supabase";
+}
+function render(){renderRole();renderPriorities();renderMachines();renderJobs();renderHistory();renderSyncPill()}
+function saveAndRender(){saveLocal();render();schedulePush()}
 
-  container.innerHTML="";
-
-  if(S.history.length===0){
-
-    container.innerHTML=
-      '<div class="empty">'+
-      'Aucun événement enregistré.'+
-      '</div>';
-
-    return;
-
+/* ---------- fusion anti-écrasement entre téléphones ---------- */
+function mergeStates(a,b){
+  const A=sanitizeState(a),B=sanitizeState(b),out=defaults();
+  out.machines=DEFAULT_MACHINES.map(base=>{
+    const ma=A.machines.find(m=>m.id===base.id),mb=B.machines.find(m=>m.id===base.id);
+    return sanitizeMachine(base,msTime(mb?.updatedAt)>msTime(ma?.updatedAt)?mb:ma);
+  });
+  if(msTime(B.prioritiesUpdatedAt)>msTime(A.prioritiesUpdatedAt)){
+    out.priorities=[...B.priorities];out.prioritiesUpdatedAt=B.prioritiesUpdatedAt;
+  }else{
+    out.priorities=[...A.priorities];out.prioritiesUpdatedAt=A.prioritiesUpdatedAt;
   }
-
-  S.history
-    .slice(0,30)
-    .forEach(event=>{
-
-      const item=
-        document.createElement("div");
-
-      item.className="historyItem";
-
-      const text=
-        document.createElement("div");
-
-      text.textContent=event.text;
-
-      const time=
-        document.createElement("div");
-
-      time.className="historyTime";
-
-      time.textContent=event.time;
-
-      item.appendChild(text);
-      item.appendChild(time);
-
-      container.appendChild(item);
-
-    });
-
+  const events=new Map();
+  for(const e of [...A.history,...B.history])if(e?.id)events.set(e.id,e);
+  out.history=[...events.values()].sort((x,y)=>msTime(y.timestamp)-msTime(x.timestamp)).slice(0,200);
+  out.updatedAt=new Date(Math.max(msTime(A.updatedAt),msTime(B.updatedAt),Date.now())).toISOString();
+  return out;
 }
 
-
-/* ================================
-   RENDU CENTRAL
-================================ */
-
-function render(){
-
+/* ---------- notifications ---------- */
+async function ensureServiceWorker(){
+  if(!("serviceWorker" in navigator) || location.protocol!=="https:")return null;
+  try{return await navigator.serviceWorker.register("./service-worker.js")}catch(e){console.warn("SW",e);return null}
+}
+async function enableNotifications(){
+  if(!("Notification" in window)){notice("Notifications non disponibles dans ce navigateur.","bad");return}
+  if(location.protocol!=="https:"){notice("Les notifications système seront disponibles une fois l'appli publiée sur GitHub Pages (HTTPS).","bad");return}
+  const perm=await Notification.requestPermission();
+  if(perm==="granted"){await ensureServiceWorker();notice("Notifications activées sur cet appareil.","good")}
+  else notice("Autorisation de notification non accordée.","bad");
+}
+async function systemNotify(title,body,tag){
+  notice(`${title} — ${body}`,"good");
+  if(!("Notification" in window)||Notification.permission!=="granted"||location.protocol!=="https:")return;
   try{
-
-    renderRole();
-
-    renderPriorities();
-
-    renderMachines();
-
-    renderJobs();
-
-    renderHistory();
-
-    save();
-
-  }catch(error){
-
-    console.error(
-      "Erreur render :",
-      error
-    );
-
-    const box=$("errorBox");
-
-    if(box){
-
-      box.style.display="block";
-
-      box.textContent=
-        "Erreur d’affichage : "+
-        error.message;
-
-    }
-
+    const reg=await navigator.serviceWorker.ready;
+    await reg.showNotification(title,{body,tag,renotify:true,icon:"./icon.svg",badge:"./icon.svg"});
+  }catch(e){
+    try{new Notification(title,{body,tag})}catch{}
   }
-
+}
+function detectRemoteNotifications(before,after){
+  for(const n of after.machines){
+    const o=before.machines.find(m=>m.id===n.id);if(!o)continue;
+    if(prefs.role==="Responsable"){
+      if(o.state==="run"&&n.state!=="run"){
+        systemNotify("Machine à l'arrêt",`${n.name} — ${n.cause}`,`stop-${n.id}-${n.updatedAt}`);
+      }
+      if(o.state!=="run"&&n.state==="run"){
+        systemNotify("Machine repartie",`${n.name} est de nouveau en marche`,`restart-${n.id}-${n.updatedAt}`);
+      }
+    }else{
+      if(n.assigned===prefs.role && n.handling==="assigned" && (o.assigned!==n.assigned || o.handling!==n.handling)){
+        systemNotify("Intervention attribuée",`${n.name} — ${n.cause}`,`assign-${n.id}-${n.updatedAt}`);
+      }
+    }
+  }
 }
 
+/* ---------- Supabase REST ---------- */
+function validSync(){return sync.enabled&&/^https:\/\/.+\.supabase\.co\/?$/.test(sync.url)&&sync.key.length>20&&sync.room.trim()}
+function api(){return sync.url.replace(/\/$/,"")+"/rest/v1/assistant_sector_state"}
+function hdr(extra={}){return {"apikey":sync.key,"Authorization":"Bearer "+sync.key,"Content-Type":"application/json",...extra}}
+async function fetchRemote(){
+  if(!validSync())return null;
+  const u=api()+"?room_id=eq."+encodeURIComponent(sync.room)+"&select=data,updated_at&limit=1";
+  const r=await fetch(u,{headers:hdr()});if(!r.ok)throw new Error("Lecture Supabase "+r.status);
+  const rows=await r.json();return rows[0]?.data?sanitizeState(rows[0].data):null;
+}
+async function testSync(){
+  if(!validSync())throw new Error("URL, clé ou code secteur invalide.");
+  const u=api()+"?room_id=eq."+encodeURIComponent(sync.room)+"&select=room_id&limit=1";
+  const r=await fetch(u,{headers:hdr()});if(!r.ok)throw new Error(`Supabase répond ${r.status}. Exécute d'abord SUPABASE_SETUP.sql.`);
+}
+async function pushRemote(){
+  if(!validSync()||syncing)return false;
+  syncing=true;renderSyncPill();
+  try{
+    let merged=state;
+    try{const remote=await fetchRemote();if(remote)merged=mergeStates(state,remote)}catch{}
+    state=merged;saveLocal();render();
+    const body={room_id:sync.room,data:state,updated_at:state.updatedAt};
+    const r=await fetch(api()+"?on_conflict=room_id",{
+      method:"POST",headers:hdr({"Prefer":"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify(body)
+    });
+    if(!r.ok)throw new Error("Envoi Supabase "+r.status);
+    return true;
+  }catch(e){console.warn(e);return false}
+  finally{syncing=false;renderSyncPill()}
+}
+async function pullRemote(show=false){
+  if(!validSync()||syncing)return false;
+  syncing=true;renderSyncPill();
+  try{
+    const remote=await fetchRemote();
+    if(!remote){if(show)notice("Aucune donnée distante pour ce code secteur.");return false}
+    const before=sanitizeState(state);
+    const merged=mergeStates(state,remote);
+    const changed=JSON.stringify(merged)!==JSON.stringify(state);
+    if(changed){
+      state=merged;saveLocal();render();detectRemoteNotifications(before,state);
+      if(show)notice("Données synchronisées.","good");
+    }else if(show)notice("Tu as déjà la version la plus récente.","good");
+    return changed;
+  }catch(e){if(show)notice("Synchronisation impossible : "+e.message,"bad");return false}
+  finally{syncing=false;renderSyncPill()}
+}
+function schedulePush(){if(!validSync())return;clearTimeout(pushTimer);pushTimer=setTimeout(pushRemote,350)}
+setInterval(()=>{if(validSync())pullRemote(false)},POLL_MS);
 
-/* ================================
-   SÉCURITÉ MODALE
-================================ */
-
-$("stopModal").addEventListener(
-  "click",
-  function(event){
-
-    if(event.target===this){
-      closeStopModal();
-    }
-
+/* ---------- événements interface ---------- */
+document.querySelectorAll(".role").forEach(b=>b.addEventListener("click",()=>setRole(b.dataset.role)));
+$("p1").addEventListener("change",e=>changePriority(0,e.target.value));
+$("p2").addEventListener("change",e=>changePriority(1,e.target.value));
+$("p3").addEventListener("change",e=>changePriority(2,e.target.value));
+$("closeStop").addEventListener("click",closeStop);
+$("stopModal").addEventListener("click",e=>{if(e.target===$("stopModal"))closeStop()});
+$("enableNotif").addEventListener("click",enableNotifications);
+$("openSettings").addEventListener("click",()=>{
+  $("sbUrl").value=sync.url;$("sbKey").value=sync.key;$("roomId").value=sync.room;
+  $("settingsResult").textContent="";$("settingsModal").classList.add("show");
+});
+$("closeSettings").addEventListener("click",()=>$("settingsModal").classList.remove("show"));
+$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))$("settingsModal").classList.remove("show")});
+$("disableSync").addEventListener("click",()=>{
+  sync.enabled=false;saveSync();renderSyncPill();$("settingsResult").textContent="Mode local activé.";notice("Mode local activé.","good");
+});
+$("saveSettings").addEventListener("click",async()=>{
+  sync={url:$("sbUrl").value.trim(),key:$("sbKey").value.trim(),room:$("roomId").value.trim()||"secteur-meulage",enabled:true};
+  saveSync();$("settingsResult").textContent="Test en cours…";renderSyncPill();
+  try{
+    await testSync();$("settingsResult").textContent="Connexion Supabase OK.";notice("Supabase connecté.","good");
+    const remote=await fetchRemote();
+    if(remote){state=mergeStates(state,remote);saveLocal();render()}
+    await pushRemote();
+  }catch(e){
+    sync.enabled=false;saveSync();renderSyncPill();
+    $("settingsResult").textContent=e.message+" — L'application reste en local.";
+    notice("Supabase non configuré : le mode local continue de fonctionner.","bad");
   }
-);
+});
+$("pushNow").addEventListener("click",async()=>{const ok=await pushRemote();notice(ok?"Données envoyées.":"Envoi impossible. Le mode local reste actif.",ok?"good":"bad")});
+$("pullNow").addEventListener("click",()=>pullRemote(true));
 
+setInterval(()=>{
+  document.querySelectorAll("[data-start]").forEach(el=>el.textContent=durationText(el.dataset.start));
+},1000);
 
-/* ================================
-   DÉMARRAGE
-================================ */
+window.addEventListener("error",e=>{console.error(e.error||e.message);notice("Une erreur a été interceptée. Les données locales sont conservées.","bad")});
+window.addEventListener("unhandledrejection",e=>{console.error(e.reason);notice("Une erreur réseau a été interceptée. L'application reste en local.","bad")});
 
-document.addEventListener(
-  "DOMContentLoaded",
-  function(){
-
-    render();
-
-  }
-);
-
+render();
+if(location.protocol==="https:")ensureServiceWorker();
+if(validSync())pullRemote(false);
+})();
 </script>
-
 </body>
 </html>
