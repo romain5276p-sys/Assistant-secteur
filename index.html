@@ -65,8 +65,10 @@ const defaultState={machines:[
 {id:5,name:"Machine 5",detail:"SIEPMANN",state:"run",cause:"",handling:"",assigned:"",startedAt:null}],priorities:[1,2,3],history:[],syncRev:0};
 const STORAGE="assistantSecteurV13",CFG="assistantSecteurV13Sync";
 let old=JSON.parse(localStorage.getItem("assistantSecteurV12")||"null")||JSON.parse(localStorage.getItem("assistantSecteurV11CompleteCorrected")||"null");
-let S=JSON.parse(localStorage.getItem(STORAGE)||"null")||old||structuredClone(defaultState);if(!S.syncRev)S.syncRev=0;S.machines.forEach(m=>{if(!("startedAt" in m))m.startedAt=null;if(m.handling==="taken"&&m.assigned&&m.assigned!=="Opérateur"&&m.assigned!=="Maintenance"){} });
+let S=JSON.parse(localStorage.getItem(STORAGE)||"null")||old||structuredClone(defaultState);
   if(!S || !Array.isArray(S.machines) || S.machines.length===0) S=structuredClone(defaultState);
+if(!S.syncRev)S.syncRev=0;S.machines.forEach(m=>{if(!("startedAt" in m))m.startedAt=null;if(m.handling==="taken"&&m.assigned&&m.assigned!=="Opérateur"&&m.assigned!=="Maintenance"){} });
+  
 let C=JSON.parse(localStorage.getItem(CFG)||"null")||{role:"Opérateur 1",url:"",key:"",room:""};
 let activeId=null,pendingCause="",syncTimer=null,syncBusy=false,lastRemoteRev=0;const causes=["Perte de pièce","Défaut capteur","Problème réglage","Meule / brossage","Robot / préhenseur","Évacuation","Appro box vide","Autre"];
 const $=id=>document.getElementById(id);
