@@ -595,9 +595,12 @@ notifBtn.onclick = async () => {
     alert("Permission notifications : " + permission);
 
     if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey: "BBZvtt8AtVVAD8ZinnfI4DQ2lFscHpfYnjXlr8GwgXCu4k67wX1TMp67yr4HmwIYL7Sv377JhKB1Dwzso-1R0Ko"
-      });
+      const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+      
+      const token = await getToken(messaging, { 
+        vapidKey: "BBZvtt8AtVVAD8ZinnfI4DQ2lFscHpfYnjXlr8GwgXCu4k67wX1TMp67yr4HmwIYL7Sv377JhKB1Dwzso-1R0Ko",
+          serviceWorkerRegistration: registration
+});
 
       alert("TOKEN FCM OK : " + token);
 
