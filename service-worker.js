@@ -18,4 +18,17 @@ self.addEventListener("notificationclick",event=>{
     for(const c of list){if("focus" in c)return c.focus()}
     if(clients.openWindow)return clients.openWindow("./");
   }));
+});self.addEventListener("push", event => {
+  const data = event.data ? event.data.json() : {};
+
+  const title = data.title || "Assistant-Secteur";
+
+  const options = {
+    body: data.body || "Nouvelle notification",
+    data: { url: "./" }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
 });
