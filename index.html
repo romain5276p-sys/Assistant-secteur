@@ -573,7 +573,7 @@ if(validSync())pullRemote(false);
 <script type="module"> 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-messaging.js";
-  console.log("TEST FIREBASE MODULE OK");
+  import { getInstallations, getId, getToken as getInstallationToken } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-installations.js";
   const firebaseConfig = {
   apiKey: "AIzaSyC_vcm4r4gmX8Y9pfSJeq2YHLpH3XTXGM0",
   authDomain: "assitant-secteur.firebaseapp.com",
@@ -584,6 +584,15 @@ import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/fireb
 }; 
 
 const app = initializeApp(firebaseConfig);
+  const installations = getInstallations(app);
+
+try {
+  const fid = await getId(installations);
+  const fisToken = await getInstallationToken(installations, true);
+  alert("INSTALLATIONS OK\nID : " + fid + "\nTOKEN : " + fisToken.substring(0,20) + "...");
+} catch (e) {
+  alert("ERREUR INSTALLATIONS\n" + e.code + "\n" + e.message);
+}
 const messaging = getMessaging(app);
   const notifBtn = document.createElement("button");
 notifBtn.textContent = "🔔 Activer les notifications";
