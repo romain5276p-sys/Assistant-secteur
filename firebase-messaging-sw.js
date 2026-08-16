@@ -11,13 +11,52 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
 messaging.onBackgroundMessage((payload) => {
   console.log("Message reçu en arrière-plan :", payload);
 
-  const title = payload.notification?.title || "Assistant Secteur";
+  const title =
+    payload.notification?.title ||
+    payload.data?.title ||
+    "🚨 Assistant-Secteur";
+
+  const body =
+    payload.notification?.body ||
+    payload.data?.body ||
+    "Nouvelle notification";
+
   const options = {
-    body: payload.notification?.body || "Nouvelle notification"
+    body: body,
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
+    vibrate: [300, 100, 300],
+    tag: "assistant-secteur",
+    renotify: true,
+    data: {
+      url: "./"
+    }
   };
 
-  self.registration.showNotification(title, options);
+  return self.registration.showNotification(title, options);
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  event.waitUntil(
+    clients.matchAll({
+      type: "window",
+      includeUncontrolled: true
+    }).then((clientList) => {
+      for (const client of clientList) {
+        if ("focus" in client) {
+          return client.focus();
+        }
+      }
+
+      if (clients.openWindow) {
+        return clients.openWindow("./");
+      }
+    })
+  );
 });
