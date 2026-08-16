@@ -608,7 +608,8 @@ notifBtn.onclick = async () => {
       const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
       
       const token = await getToken(messaging, { 
-        vapidKey: "BBZvtt8AtVVAD8ZinnfI4DQ2lFscHpfYnjXlr8GwgXCu4k67wX1TMp67yr4HmwIYL7Sv377JhKB1Dwzso-1R0Ko",
+        vapidKey: 
+     "BBZvtt8AtVVAD8ZinnfI4DQ2lFscHpfYnjXlr8GwgXCu4k67wXlTMp67yr4HmwIYL7Sv37ZJhKBlDwzso-1ROKo",
           serviceWorkerRegistration: registration
 });
 
