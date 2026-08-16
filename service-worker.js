@@ -21,10 +21,10 @@ self.addEventListener("notificationclick",event=>{
 });self.addEventListener("push", event => {
   const data = event.data ? event.data.json() : {};
 
-  const title = data.title || "Assistant-Secteur";
+  const title = data.data?.title || data.title || "Assistant-Secteur";
 
   const options = {
-    body: data.body || "Nouvelle notification",
+    body: data.data?.body || data.body || "Nouvelle notification",
     data: { url: "./" }
   };
 
