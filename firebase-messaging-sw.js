@@ -23,7 +23,7 @@ messaging.onBackgroundMessage((payload) => {
   const body =
     payload.notification?.body ||
     payload.data?.body ||
-    "Nouvelle notification";
+    ""TEST SERVICE WORKER 123"";
 
   const options = {
     body: body,
