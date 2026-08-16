@@ -263,6 +263,29 @@ function changePriority(i,val){
   addEvent("priority",null,"Priorités modifiées : "+state.priorities.map((n,j)=>`P${j+1} Machine ${n}`).join(" • "));
   saveAndRender();
 }
+  async function sendPush(title, body) {
+  try {
+    const response = await fetch(
+      "https://dknmledojyrtixppnsxf.supabase.co/functions/v1/send-push",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token: "du9wWFBNR2fPgWimLKOHlV:APA91bEuY7tGS3-y6P_eU8NFrrjbNUDMkzGG7QqSliyCTeVsjx4kN-JVv1FqeHs4rRdv-QDW69fIh6H7ZZDkutI_uBlbnifGI1S9hyqKBg55sv_xeYY54fE",
+          title,
+          body
+        })
+      }
+    );
+
+    const result = await response.json();
+    console.log("PUSH FCM :", result);
+  } catch (err) {
+    console.error("ERREUR PUSH :", err);
+  }
+  }
 function openStop(id){
   activeMachineId=id;const m=machine(id);if(!m)return;
   $("stopMachine").textContent=m.name;$("causeList").innerHTML="";
