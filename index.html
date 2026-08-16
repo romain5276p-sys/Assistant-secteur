@@ -477,7 +477,7 @@ function mergeStates(a,b){
 /* ---------- notifications ---------- */
 async function ensureServiceWorker(){
   if(!("serviceWorker" in navigator) || location.protocol!=="https:")return null;
-  try{return await navigator.serviceWorker.register("./service-worker.js")}catch(e){console.warn("SW",e);return null}
+  try{return await navigator.serviceWorker.register("./firebase-messaging-sw.js")}catch(e){console.warn("SW",e);return null}
 }
 async function enableNotifications(){
   if(!("Notification" in window)){notice("Notifications non disponibles dans ce navigateur.","bad");return}
