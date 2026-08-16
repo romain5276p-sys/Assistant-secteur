@@ -614,7 +614,8 @@ notifBtn.onclick = async () => {
 });
 
       
-prompt("TOKEN FCM CRÉÉ ✅\n\nAppui long sur le token puis Copier :", token);
+localStorage.setItem("fcm_token", token);
+alert("✅ Notifications activées");
 
       notifBtn.textContent = "✅ Notifications activées";
       notifBtn.disabled = true;
