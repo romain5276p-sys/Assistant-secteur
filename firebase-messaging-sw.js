@@ -11,3 +11,13 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+messaging.onBackgroundMessage((payload) => {
+  console.log("Message reçu en arrière-plan :", payload);
+
+  const title = payload.notification?.title || "Assistant Secteur";
+  const options = {
+    body: payload.notification?.body || "Nouvelle notification"
+  };
+
+  self.registration.showNotification(title, options);
+});
