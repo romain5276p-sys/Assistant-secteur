@@ -613,9 +613,8 @@ notifBtn.onclick = async () => {
           serviceWorkerRegistration: registration
 });
 
-      await
-      navigator.clipboard.writeText(token);
-alert("TOKEN FCM COPIÉ ✅\n\nTu peux maintenant le coller dans Firebase.");
+      
+alert("TOKEN FCM CRÉÉ ✅\n\n" + token);
 
       notifBtn.textContent = "✅ Notifications activées";
       notifBtn.disabled = true;
