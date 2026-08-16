@@ -276,10 +276,28 @@ function closeStop(){$("stopModal").classList.remove("show");activeMachineId=nul
 function declareStop(cause){
   const m=machine(activeMachineId);if(!m)return;
   const t=iso();
-  m.state=cause==="Changement de série"?"change":"stop";m.cause=cause;m.assigned="";m.handling="waiting";
-  m.stoppedAt=t;m.interventionStartedAt=null;m.updatedAt=t;
-  addEvent(m.state==="change"?"changeover":"stop",m,`${m.name} : ${cause} déclaré par ${actor()}`);
-  closeStop();saveAndRender();
+
+  m.state=cause==="Changement de série"?"change":"stop";
+  m.cause=cause;
+  m.assigned="";
+  m.handling="waiting";
+  m.stoppedAt=t;
+  m.interventionStartedAt=null;
+  m.updatedAt=t;
+
+  addEvent(
+    m.state==="change"?"changeover":"stop",
+    m,
+    `${m.name} : ${cause} déclaré par ${actor()}`
+  );
+
+  sendPush(
+    "🚨 Assistant-Secteur",
+    `${m.name} : ${cause} — déclaré par ${actor()}`
+  );
+
+  closeStop();
+  saveAndRender();
 }
 function quickChange(id){activeMachineId=id;declareStop("Changement de série")}
 function takeJob(id){
