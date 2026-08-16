@@ -13,28 +13,26 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  console.log("Message reçu en arrière-plan :", payload);
+  console.log("FCM background :", payload);
 
-  const title =
-    payload.notification?.title ||
-    payload.data?.title ||
-    "🚨 Assistant-Secteur";
+  const title = payload.data?.title || "🚨 Assistant-Secteur";
+  const body = payload.data?.body || "TEST SERVICE WORKER 123";
 
-  const body =
-    payload.notification?.body ||
-    payload.data?.body ||
-    ""TEST SERVICE WORKER 123"";
-
-  const options = {
+  return self.registration.showNotification(title, {
     body: body,
-    icon: "./icon-192.png",
-    badge: "./icon-192.png",
     vibrate: [300, 100, 300],
     tag: "assistant-secteur",
-    renotify: true,
-    data: {
-      url: "./"
-    }
+    renotify: true
+  });
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  event.waitUntil(
+    clients.openWindow("./")
+  );
+});    }
   };
 
   return self.registration.showNotification(title, options);
